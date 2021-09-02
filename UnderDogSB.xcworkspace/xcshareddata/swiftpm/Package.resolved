@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "iColor",
+        "repositoryURL": "https://github.com/iSwiftUIHome/iColor.git",
+        "state": {
+          "branch": null,
+          "revision": "3c2ae81be776ba4b26a0ca223f819c4d7676b5d4",
+          "version": "0.1.1"
+        }
+      },
+      {
+        "package": "iLineChart",
+        "repositoryURL": "https://github.com/AlexFine/iLineChart.git",
+        "state": {
+          "branch": null,
+          "revision": "683279134c561cfa59a4cee9ecdfab177858f4ed",
+          "version": "1.6.4"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

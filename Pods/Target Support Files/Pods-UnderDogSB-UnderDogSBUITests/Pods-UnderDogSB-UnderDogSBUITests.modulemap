@@ -1,0 +1,6 @@
+framework module Pods_UnderDogSB_UnderDogSBUITests {
+  umbrella header "Pods-UnderDogSB-UnderDogSBUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

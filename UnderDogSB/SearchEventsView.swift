@@ -8,6 +8,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
+//#if (arm64)
 struct SearchEventsView: View {
  //   @State var posts: [Initial.Datas] = []
     @State var text = ""
@@ -21,6 +22,7 @@ struct SearchEventsView: View {
     let SportEPL = ["EPL"]
     let SportMLB = ["MLB"]
     let SportEuro  = ["Euro League"]
+    let SportNCAAF = ["NCAAF"]
     let SportNHL = ["NHL"]
     let SportMMA = ["MMA"]
     let SportNRL = ["NRL"]
@@ -73,35 +75,45 @@ struct SearchEventsView: View {
                     }
                 }
                 // List of games
-                ForEach(SportAFL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                ForEach(SportAFL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                    HStack{
+//                       NavigationLink(destination: AUFootballView()) {
+//                            Text("AFL 🏈 🇦🇺")
+//                            Spacer()
+//                       }
+//                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+//                }
+//                ForEach(SportEPL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                    HStack{
+//                       NavigationLink(destination: SoccerEPLView()) {
+//                            Text("EPL ⚽ 🇬🇧")
+//                            Spacer()
+//                       }
+//                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+//                }
+//                ForEach(SportEuro.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                    HStack{
+//                       NavigationLink(destination: EuroLeagueBBView()) {
+//                            Text("Euro League 🏀 🇪🇺")
+//                            Spacer()
+//                       }
+//                    }.padding()
+//                    Divider()
+//                    .padding(.leading)
+//                }
+                ForEach(SportNCAAF.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
-                       NavigationLink(destination: AUFootballView()) {
-                            Text("AFL 🏈 🇦🇺")
+                       NavigationLink(destination: NCAAFView()) {
+                            Text("NCAAF 🏈 🇺🇸")
                             Spacer()
                        }
                     }.padding()
                     Divider()
                         .padding(.leading)
-                }
-                ForEach(SportEPL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-                    HStack{
-                       NavigationLink(destination: SoccerEPLView()) {
-                            Text("EPL ⚽ 🇬🇧")
-                            Spacer()
-                       }
-                    }.padding()
-                    Divider()
-                        .padding(.leading)
-                }
-                ForEach(SportEuro.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-                    HStack{
-                       NavigationLink(destination: EuroLeagueBBView()) {
-                            Text("Euro League 🏀 🇪🇺")
-                            Spacer()
-                       }
-                    }.padding()
-                    Divider()
-                    .padding(.leading)
                 }
                 ForEach(SportMLB.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
@@ -113,26 +125,26 @@ struct SearchEventsView: View {
                     Divider()
                         .padding(.leading)
                 }
-                ForEach(SportMLS.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-                    HStack{
-                       NavigationLink(destination: MLSView()) {
-                            Text("MLS ⚽ 🇺🇸")
-                            Spacer()
-                       }
-                    }.padding()
-                    Divider()
-                        .padding(.leading)
-                }
-                ForEach(SportMMA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-                    HStack{
-                        NavigationLink(destination: MMAView()) {
-                            Text("MMA 🥋 🇺🇸")
-                            Spacer()
-                        }
-                    }.padding()
-                    Divider()
-                        .padding(.leading)
-                }
+//                ForEach(SportMLS.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                    HStack{
+//                       NavigationLink(destination: MLSView()) {
+//                            Text("MLS ⚽ 🇺🇸")
+//                            Spacer()
+//                       }
+//                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+//                }
+//                ForEach(SportMMA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                    HStack{
+//                        NavigationLink(destination: MMAView()) {
+//                            Text("MMA 🥋 🇺🇸")
+//                            Spacer()
+//                        }
+//                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+//                }
                 ForEach(SportNBA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
                         NavigationLink(destination: NBAView()) {
@@ -153,31 +165,32 @@ struct SearchEventsView: View {
                     Divider()
                         .padding(.leading)
                 }
-                Group{
-                    ForEach(SportNHL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-                        HStack{
-                            NavigationLink(destination: NHLView()) {
-                                Text("NHL 🏒 🇺🇸")
-                                Spacer()
-                            }
-                        }.padding()
-                        Divider()
-                            .padding(.leading)
-                    }
-                    ForEach(SportNRL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-                        HStack{
-                            NavigationLink(destination: RugbyView()) {
-                                Text("NRL 🏉 🇦🇺")
-                                Spacer()
-                            }
-                        }.padding()
-                        Divider()
-                            .padding(.leading)
-                    }
-                }
+//                Group{
+//                    ForEach(SportNHL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                        HStack{
+//                            NavigationLink(destination: NHLView()) {
+//                                Text("NHL 🏒 🇺🇸")
+//                                Spacer()
+//                            }
+//                        }.padding()
+//                        Divider()
+//                            .padding(.leading)
+//                    }
+//                    ForEach(SportNRL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+//                        HStack{
+//                            NavigationLink(destination: RugbyView()) {
+//                                Text("NRL 🏉 🇦🇺")
+//                                Spacer()
+//                            }
+//                        }.padding()
+//                        Divider()
+//                            .padding(.leading)
+//                    }
+//                }
             }
             .foregroundColor(.gray)
             .navigationTitle("Events")
         }
     }
 }
+//#endif

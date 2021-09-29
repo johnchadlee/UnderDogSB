@@ -10,6 +10,7 @@
 		2029A51439825C6F76CFFCC3 /* Pods_UnderDogSB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD19E953585733A54D9BB79A /* Pods_UnderDogSB.framework */; };
 		69A052C5B529605BD8347BCA /* Pods_UnderDogSBTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 531A00B8FBB3F702857D2A19 /* Pods_UnderDogSBTests.framework */; };
 		8536B1BFEAA9CCBF3B739989 /* Pods_UnderDogSB_UnderDogSBUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14A005C3DF32D41C6950F6AB /* Pods_UnderDogSB_UnderDogSBUITests.framework */; };
+		EB20AF962704593000CF5FDB /* iLineChart in Frameworks */ = {isa = PBXBuildFile; productRef = EB20AF952704593000CF5FDB /* iLineChart */; };
 		EB47B49F26DD906B00843038 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B49E26DD906B00843038 /* AppDelegate.swift */; };
 		EB47B4A126DD906B00843038 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B4A026DD906B00843038 /* SceneDelegate.swift */; };
 		EB47B4A326DD906B00843038 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B4A226DD906B00843038 /* ContentView.swift */; };
@@ -19,14 +20,12 @@
 		EB47B4B626DD907300843038 /* UnderDogSBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B4B526DD907300843038 /* UnderDogSBTests.swift */; };
 		EB47B4C126DD907300843038 /* UnderDogSBUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B4C026DD907300843038 /* UnderDogSBUITests.swift */; };
 		EB47B4D226DD914100843038 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB47B4D126DD914100843038 /* GoogleService-Info.plist */; };
-		EB47B4F626DDA7A200843038 /* iLineChart in Frameworks */ = {isa = PBXBuildFile; productRef = EB47B4F526DDA7A200843038 /* iLineChart */; };
 		EBB0FACD26DDAA4A0026679E /* BettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FACC26DDAA4A0026679E /* BettingView.swift */; };
 		EBB0FAEA26DDAA560026679E /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAE926DDAA560026679E /* AuthView.swift */; };
 		EBB0FAEF26DDAA5F0026679E /* profileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAEE26DDAA5E0026679E /* profileItem.swift */; };
 		EBB0FAF126DDAA660026679E /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAF026DDAA660026679E /* SessionStore.swift */; };
 		EBB0FAF626DDAA6C0026679E /* UserProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAF526DDAA6C0026679E /* UserProfileRepository.swift */; };
 		EBB0FAFB26DDAA760026679E /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAFA26DDAA760026679E /* ArchiveView.swift */; };
-		EBB0FB0026DDAA7D0026679E /* historyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAFF26DDAA7D0026679E /* historyView.swift */; };
 		EBB0FB0526DDAA860026679E /* PopularEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FB0426DDAA860026679E /* PopularEvent.swift */; };
 		EBB0FB0A26DDAA8E0026679E /* SearchEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FB0926DDAA8E0026679E /* SearchEventsView.swift */; };
 		EBB0FB0F26DDAA990026679E /* UpdatePreferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FB0E26DDAA990026679E /* UpdatePreferenceView.swift */; };
@@ -44,6 +43,7 @@
 		EBB0FB6E26DDAC100026679E /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FB6426DDAC0F0026679E /* BottomSheetView.swift */; };
 		EBB0FB6F26DDAC100026679E /* OrderDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FB6526DDAC0F0026679E /* OrderDetails.swift */; };
 		EBB0FB7026DDAC100026679E /* GameResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FB6626DDAC100026679E /* GameResult.swift */; };
+		EBD7865D26EF1B360046CD6E /* iColor in Frameworks */ = {isa = PBXBuildFile; productRef = EBD7865C26EF1B360046CD6E /* iColor */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +72,8 @@
 		7EFCF006C98C1C03F9E52EE6 /* Pods-UnderDogSB-UnderDogSBUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnderDogSB-UnderDogSBUITests.release.xcconfig"; path = "Target Support Files/Pods-UnderDogSB-UnderDogSBUITests/Pods-UnderDogSB-UnderDogSBUITests.release.xcconfig"; sourceTree = "<group>"; };
 		A91852EAE3E21821A066B16E /* Pods-UnderDogSB-UnderDogSBUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnderDogSB-UnderDogSBUITests.debug.xcconfig"; path = "Target Support Files/Pods-UnderDogSB-UnderDogSBUITests/Pods-UnderDogSB-UnderDogSBUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		DD3B70D6EDDBB3869DD6A44C /* Pods-UnderDogSBTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnderDogSBTests.release.xcconfig"; path = "Target Support Files/Pods-UnderDogSBTests/Pods-UnderDogSBTests.release.xcconfig"; sourceTree = "<group>"; };
+		EB20AF2F270446C100CF5FDB /* iLineChart */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iLineChart; path = ../iLineChart; sourceTree = "<group>"; };
+		EB20AF332704477000CF5FDB /* iLineChart */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iLineChart; path = ../iLineChart; sourceTree = "<group>"; };
 		EB47B49B26DD906B00843038 /* UnderDogSB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnderDogSB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB47B49E26DD906B00843038 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB47B4A026DD906B00843038 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -87,13 +89,13 @@
 		EB47B4C026DD907300843038 /* UnderDogSBUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderDogSBUITests.swift; sourceTree = "<group>"; };
 		EB47B4C226DD907300843038 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB47B4D126DD914100843038 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EB8DC3A127045B60004A0AEC /* iLineChart */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iLineChart; path = ../iLineChart; sourceTree = "<group>"; };
 		EBB0FACC26DDAA4A0026679E /* BettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BettingView.swift; sourceTree = "<group>"; };
 		EBB0FAE926DDAA560026679E /* AuthView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		EBB0FAEE26DDAA5E0026679E /* profileItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = profileItem.swift; sourceTree = "<group>"; };
 		EBB0FAF026DDAA660026679E /* SessionStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
 		EBB0FAF526DDAA6C0026679E /* UserProfileRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileRepository.swift; sourceTree = "<group>"; };
 		EBB0FAFA26DDAA760026679E /* ArchiveView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
-		EBB0FAFF26DDAA7D0026679E /* historyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = historyView.swift; sourceTree = "<group>"; };
 		EBB0FB0426DDAA860026679E /* PopularEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopularEvent.swift; sourceTree = "<group>"; };
 		EBB0FB0926DDAA8E0026679E /* SearchEventsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchEventsView.swift; sourceTree = "<group>"; };
 		EBB0FB0E26DDAA990026679E /* UpdatePreferenceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePreferenceView.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 		EBB0FB6426DDAC0F0026679E /* BottomSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		EBB0FB6526DDAC0F0026679E /* OrderDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDetails.swift; sourceTree = "<group>"; };
 		EBB0FB6626DDAC100026679E /* GameResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameResult.swift; sourceTree = "<group>"; };
+		EBB764FA26EB641D000F422E /* iColor */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iColor; path = ../iColor/iColor; sourceTree = "<group>"; };
 		FD19E953585733A54D9BB79A /* Pods_UnderDogSB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnderDogSB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -120,7 +123,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2029A51439825C6F76CFFCC3 /* Pods_UnderDogSB.framework in Frameworks */,
-				EB47B4F626DDA7A200843038 /* iLineChart in Frameworks */,
+				EB20AF962704593000CF5FDB /* iLineChart in Frameworks */,
+				EBD7865D26EF1B360046CD6E /* iColor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +150,8 @@
 		94B57CB9E96775B4957FE9D0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EB20AF2F270446C100CF5FDB /* iLineChart */,
+				EB20AF332704477000CF5FDB /* iLineChart */,
 				FD19E953585733A54D9BB79A /* Pods_UnderDogSB.framework */,
 				14A005C3DF32D41C6950F6AB /* Pods_UnderDogSB_UnderDogSBUITests.framework */,
 				531A00B8FBB3F702857D2A19 /* Pods_UnderDogSBTests.framework */,
@@ -156,6 +162,8 @@
 		EB47B49226DD906B00843038 = {
 			isa = PBXGroup;
 			children = (
+				EB8DC3A127045B60004A0AEC /* iLineChart */,
+				EBB764FA26EB641D000F422E /* iColor */,
 				EB47B49D26DD906B00843038 /* UnderDogSB */,
 				EB47B4B426DD907300843038 /* UnderDogSBTests */,
 				EB47B4BF26DD907300843038 /* UnderDogSBUITests */,
@@ -187,7 +195,6 @@
 				EBB0FAF026DDAA660026679E /* SessionStore.swift */,
 				EBB0FAE926DDAA560026679E /* AuthView.swift */,
 				EBB0FACC26DDAA4A0026679E /* BettingView.swift */,
-				EBB0FAFF26DDAA7D0026679E /* historyView.swift */,
 				EBB0FAFA26DDAA760026679E /* ArchiveView.swift */,
 				EBB0FB0426DDAA860026679E /* PopularEvent.swift */,
 				EBB0FAF526DDAA6C0026679E /* UserProfileRepository.swift */,
@@ -288,7 +295,8 @@
 			);
 			name = UnderDogSB;
 			packageProductDependencies = (
-				EB47B4F526DDA7A200843038 /* iLineChart */,
+				EBD7865C26EF1B360046CD6E /* iColor */,
+				EB20AF952704593000CF5FDB /* iLineChart */,
 			);
 			productName = UnderDogSB;
 			productReference = EB47B49B26DD906B00843038 /* UnderDogSB.app */;
@@ -365,7 +373,7 @@
 			);
 			mainGroup = EB47B49226DD906B00843038;
 			packageReferences = (
-				EB47B4F426DDA7A200843038 /* XCRemoteSwiftPackageReference "iLineChart" */,
+				EB20AF942704593000CF5FDB /* XCRemoteSwiftPackageReference "iLineChart" */,
 			);
 			productRefGroup = EB47B49C26DD906B00843038 /* Products */;
 			projectDirPath = "";
@@ -531,7 +539,6 @@
 				EBB0FB6826DDAC100026679E /* OnGoing.swift in Sources */,
 				EBB0FAF626DDAA6C0026679E /* UserProfileRepository.swift in Sources */,
 				EBB0FB6B26DDAC100026679E /* ConfirmOrder.swift in Sources */,
-				EBB0FB0026DDAA7D0026679E /* historyView.swift in Sources */,
 				EBB0FAFB26DDAA760026679E /* ArchiveView.swift in Sources */,
 				EBB0FB4826DDABB90026679E /* odds.swift in Sources */,
 				EBB0FB6E26DDAC100026679E /* BottomSheetView.swift in Sources */,
@@ -625,7 +632,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -688,7 +695,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				EXCLUDED_ARCHS = "";
+				EXCLUDED_ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -723,6 +730,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = gwadrednu.UnderDogSB;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -745,6 +753,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.5;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = gwadrednu.UnderDogSB;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -883,7 +892,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EB47B4F426DDA7A200843038 /* XCRemoteSwiftPackageReference "iLineChart" */ = {
+		EB20AF942704593000CF5FDB /* XCRemoteSwiftPackageReference "iLineChart" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AlexFine/iLineChart.git";
 			requirement = {
@@ -894,10 +903,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EB47B4F526DDA7A200843038 /* iLineChart */ = {
+		EB20AF952704593000CF5FDB /* iLineChart */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EB47B4F426DDA7A200843038 /* XCRemoteSwiftPackageReference "iLineChart" */;
+			package = EB20AF942704593000CF5FDB /* XCRemoteSwiftPackageReference "iLineChart" */;
 			productName = iLineChart;
+		};
+		EBD7865C26EF1B360046CD6E /* iColor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = iColor;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

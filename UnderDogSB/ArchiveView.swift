@@ -8,6 +8,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
+//#if (arm64)
 struct ArchiveView : View {
 @EnvironmentObject var session: SessionStore
 @State var posts: [Initial.Datas] = []
@@ -29,7 +30,7 @@ struct ArchiveView : View {
 //                        OnGoing()
                         betsWon()
                     }
-                }
+                }.padding(.top)
                 Divider()
                 List{
                     VStack{
@@ -39,12 +40,13 @@ struct ArchiveView : View {
 //                        OnGoing()
                         betsLost()
                     }
-                }
+                }.padding(.top)
             }
         }
         .font(.custom("NotoSans-Medium", size: 25))
     }
 }
+//#endif
 //struct ArchiveView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        ArchiveView()

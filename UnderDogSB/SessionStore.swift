@@ -10,6 +10,7 @@ import Firebase
 import Combine
 import Foundation
 
+//#if (arm64)
 class SessionStore: ObservableObject {
     var didChange = PassthroughSubject<SessionStore, Never>()
     @Published var session: User? {didSet {self.didChange.send(self) }}
@@ -22,7 +23,7 @@ class SessionStore: ObservableObject {
     @Published var LBets: OrderDetails?
     @Published var wonBets: [OrderDetails] = []
     @Published var lostBets: [OrderDetails] = []
-    @Published var mlbgameResults: [MLBGameResult] = []
+    @Published var gameResults: [GameResult] = []
     @Published var GameMatch: [Match] = []
     private var upcomingGameRepo = GameOddsRepo()
     private var profileRepository = UserProfileRepository()
@@ -47,16 +48,67 @@ class SessionStore: ObservableObject {
                     return
                   }
                   self.pref = pref
-                }
-                self.upcomingGameRepo.FindUpComingGames() {
-                    (gameMatch ,error) in
-                    if let error = error{
-                        print("\(error)")
-                        return
+//                    print(self.pref)
+                    if(self.pref?.MLB == true){
+                        self.upcomingGameRepo.MLBUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+//                            print(gameMatch)
+                            self.GameMatch += gameMatch
+        //                    print(self.GameMatch)
+                        }
                     }
-//                    print(gameMatch)
-                    self.GameMatch = gameMatch
-//                    print(self.GameMatch)
+                    if(self.pref?.NBA == true){
+                        self.upcomingGameRepo.NBAUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+        //                    print(gameMatch)
+                            self.GameMatch += gameMatch
+        //                    print(self.GameMatch)
+                        }
+                    }
+                    if(self.pref?.NFL == true){
+                        self.upcomingGameRepo.NFLUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+                            print(gameMatch)
+                            self.GameMatch += gameMatch
+        //                    print(self.GameMatch)
+                        }
+                    }
+                    if(self.pref?.NHL == true){
+                        self.upcomingGameRepo.NHLUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+        //                    print(gameMatch)
+                            self.GameMatch += gameMatch
+        //                    print(self.GameMatch)
+                        }
+                    }
+                    if(self.pref?.NCAAF == true){
+                        self.upcomingGameRepo.NCAAFUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+//                            print(gameMatch)
+                            self.GameMatch += gameMatch
+        //                    print(self.GameMatch)
+                        }
+                    }
                 }
                 self.orderRespository.listenOrder(userId: user.uid) { (onGoingBets, error) in
                   if let error = error {
@@ -73,7 +125,7 @@ class SessionStore: ObservableObject {
                         print("Error finding finished games: \(error)")
                         return
                     }
-                    self.mlbgameResults = gameResults
+                    self.gameResults = gameResults
 //                    print(self.mlbgameResults)
 //                    self.PayOutFunction(userId: user.uid)
                 }
@@ -112,7 +164,7 @@ class SessionStore: ObservableObject {
             onGoingBets.forEach {
                 child in
 //                print(mlbgameResults)
-                mlbgameResults.forEach {
+                gameResults.forEach {
                     game in
 //                    print(game)
                     if (child.gameID == game.id){
@@ -165,7 +217,7 @@ class SessionStore: ObservableObject {
             }
         }
     }
-    func signUp(email: String, password: String, displayName: String ,State: String, age: Int, score: [Double], NFL: Bool, AFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, Euroleague: Bool, MMA: Bool, NRL: Bool, EPL: Bool, MLS: Bool, completion: @escaping (_ profile: UserProfile?,_ pref: preference? ,_ error: Error?) -> Void) {
+    func signUp(email: String, password: String, displayName: String ,State: String, age: Int, score: [Double], NFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, completion: @escaping (_ profile: UserProfile?,_ pref: preference? ,_ error: Error?) -> Void) {
       Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
         if let error = error {
           print("Error signing up: \(error)")
@@ -176,7 +228,7 @@ class SessionStore: ObservableObject {
         print("User \(user.uid) signed up.")
 
         let userProfile = UserProfile(uid: user.uid, displayName: displayName, State: State, age: age, email: email, score: score)
-        let pref = preference(NFL: NFL, AFL: AFL, MLB: MLB, NBA: NBA, NHL: NHL, Euroleague: Euroleague, MMA: MMA, NRL: NRL, EPL: EPL, MLS: MLS)
+        let pref = preference(NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF)
         self.profileRepository.createProfile(profile: userProfile, preference: pref) { (profile, preference, error) in
           if let error = error {
             print("Error while creating the user profile: \(error)")
@@ -246,11 +298,11 @@ class SessionStore: ObservableObject {
             } )
         }
     
-    func confirmUpdatedPref(NFL: Bool, AFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, Euroleague: Bool, MMA: Bool, NRL: Bool, EPL: Bool, MLS: Bool,completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
+    func confirmUpdatedPref(NFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool,completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
         let user = Auth.auth().currentUser
         if let user = user {
             let uid = user.uid
-            self.profileRepository.updatePref(userId:uid, NFL:NFL, AFL: AFL, MLB: MLB, NBA: NBA, NHL: NHL, Euroleague: Euroleague, MMA: MMA, NRL: NRL, EPL: EPL, MLS: MLS){ (pref, error) in
+            self.profileRepository.updatePref(userId: uid, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF){ (pref, error) in
                 if let error = error {
                     print("Error whil confirm updating user preference: \(error)")
                     completion(nil, nil)
@@ -298,3 +350,4 @@ struct User {
         self.displayName = displayName
     }
 }
+//#endif

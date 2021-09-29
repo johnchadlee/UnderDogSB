@@ -8,7 +8,9 @@
 import UIKit
 import Firebase
 
-@main
+//#if (arm64)
+//@main
+@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
@@ -35,4 +37,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-
+//#endif

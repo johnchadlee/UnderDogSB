@@ -74,10 +74,10 @@ struct BottomSheetView<Content: View>: View {
     }
 }
 
-struct BottomSheetView_Previews: PreviewProvider {
-    static var previews: some View {
-        BottomSheetView(isOpen: .constant(false), maxHeight: 600) {
-            Rectangle().fill(Color.neonOceanBlue)
-        }.edgesIgnoringSafeArea(.all)
-    }
-}
+//struct BottomSheetView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        BottomSheetView(isOpen: .constant(false), maxHeight: 600) {
+//            Rectangle().fill(Color.neonOceanBlue)
+//        }.edgesIgnoringSafeArea(.all)
+//    }
+//}

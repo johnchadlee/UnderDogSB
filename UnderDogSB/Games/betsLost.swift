@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//#if (arm64)
 struct betsLost: View {
     @State var team_Name1 : String  = ""
     @State var team_Name2 : String = ""
@@ -44,4 +45,4 @@ struct betsLost: View {
         }
     }
 }
-
+//#endif

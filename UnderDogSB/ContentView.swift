@@ -11,6 +11,7 @@ import Firebase
 import UIKit
 import Foundation
 
+//#if (arm64)
 struct ContentView: View {
     @EnvironmentObject var session: SessionStore
     func getUser() {
@@ -22,6 +23,7 @@ struct ContentView: View {
                 LoggedInView()
             } else {
                 AuthView()
+                    .transition(.move(edge: .trailing))
             }
         }.onAppear(perform: getUser)
     }
@@ -79,6 +81,26 @@ struct HomeTabView : View {
     @State var OddsAmount = []
     @State private var hidesheet = false
     @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var spacing: Float {
+        if(UIScreen.main.bounds.height == 667){
+            return 100.0;
+        }
+        else if(UIScreen.main.bounds.height == 896){
+            return 85.0;
+        }
+        else{
+            return 100.0;
+        }
+    }
+    
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 830;
+        }
+    }
     
     var ScoreHistory: [Double] {
         var history = [Double]()
@@ -165,7 +187,7 @@ struct HomeTabView : View {
                             .alignmentGuide(.leading){
                                 d in d[.trailing]
                             }
-                            .offset(x: 74.0, y: 5.0)
+                            .offset(x: CGFloat(spacing), y: 5.0)
                         })
                             .frame(width: .infinity, height: 50, alignment: .leading)
                         if showOnGoing == true {
@@ -189,7 +211,7 @@ struct HomeTabView : View {
             }
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let commenceTime = gamed.date
                             let id = UUID().uuidString
@@ -222,40 +244,41 @@ struct ProfileTabView: View {
                 List{
                     NavigationLink (destination: UpdatePasswordView()){
                         Text("Update Password")
-                            .font(.custom("NotoSans-Medium", size: 23))
+                            .font(.system(size: 23))
                             .padding()
                     }
                     NavigationLink (destination: UpdatePreferenceView()){
                         Text("Update Sports Preference")
-                            .font(.custom("NotoSans-Medium", size: 23))
+                            .font(.system(size: 23))
                             .padding()
                     }
 //                    NavigationLink (destination: UpdateInformationView())
 //                        { Text("Update User Information").background(Color.clear)}
                     NavigationLink (destination: ContactSupportView()){
                         Text("Contact Support")
-                            .font(.custom("NotoSans-Medium", size: 23))
+                            .font(.system(size: 23))
                             .padding()
                     }
                     NavigationLink (destination: SportsBetting101View()){
                         Text("Sports Betting 101")
-                            .font(.custom("NotoSans-Medium", size: 23))
+                            .font(.system(size: 23))
                             .padding()
                     }
                     NavigationLink (destination: DarkModeView()){
                         Text("Dark Mode")
-                            .font(.custom("NotoSans-Medium", size: 23))
+                            .font(.system(size: 23))
                             .padding()
                     }
                     Button(action: session.signOut){
                         Text("Sign Out")
-                            .font(.custom("NotoSans-Medium", size: 23))
+                            .font(.system(size: 23))
                             .padding()
                     }
                 }
             .navigationBarTitle("Settings")
-            .font(.system(size: 30, weight: .bold, design: .rounded))
+//            .font(.system(size: 30, weight: .bold, design: .rounded))
             .padding()
         }
     }
 }
+//#endif

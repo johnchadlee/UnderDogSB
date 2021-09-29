@@ -4,6 +4,7 @@ import Firebase
 import UIKit
 import FirebaseDatabase
 
+//#if (arm64)
 struct SportsBetting101View: View {
     @EnvironmentObject var session: SessionStore
     @Environment(\.colorScheme) var colorScheme
@@ -12,7 +13,7 @@ struct SportsBetting101View: View {
         if(colorScheme == .dark){
         TabView{
             ForEach(1..<numberOfTut) {   num in
-                Image("dtut\(num)")
+                Image("tut\(num)")
                     .resizable()
                     .scaledToFit()
                     .tag(num)
@@ -113,3 +114,4 @@ struct DarkModeView: View {
         .frame(maxHeight: .infinity, alignment: .top)
         }
 }
+//#endif

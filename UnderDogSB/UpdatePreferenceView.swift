@@ -10,31 +10,39 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
+//#if (arm64)
 struct UpdatePreferenceView: View {
     @EnvironmentObject var session: SessionStore
 //    private var profileRepository = UserProfileRepository()
-    
     @State var NFL: Bool = true
-    @State var AFL: Bool = true
+//    @State var AFL: Bool = true
     @State var MLB: Bool = true
     @State var NBA: Bool = true
     @State var NHL: Bool = true
-    @State var Euroleague: Bool = false
-    @State var MMA: Bool = false
-    @State var NRL: Bool = false
-    @State var EPL: Bool = false
-    @State var MLS: Bool = false
+    @State var NCAAF: Bool = true
+//    @State var Euroleague: Bool = false
+//    @State var MMA: Bool = false
+//    @State var NRL: Bool = false
+//    @State var EPL: Bool = false
+//    @State var MLS: Bool = false
     @State var error: String = ""
+    @State var showingAlert = false
+    @State var showSuccess = false
 
     let columns = [
         GridItem(.adaptive(minimum: 100))
     ]
     
     func confirmUpdatedPref() {
-        session.confirmUpdatedPref(NFL: NFL, AFL: AFL, MLB: MLB, NBA: NBA, NHL: NHL, Euroleague: Euroleague, MMA: MMA, NRL: NRL, EPL: EPL, MLS: MLS) { (preference, error) in
+        session.confirmUpdatedPref(NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF) { (preference, error) in
             if let error = error {
                 self.error = error.localizedDescription
             }
+        }
+        if(error == ""){
+            showSuccess = true;
+        }else{
+            showingAlert = true;
         }
     }
 
@@ -44,7 +52,7 @@ struct UpdatePreferenceView: View {
             Spacer()
             Text("Update Your Preference")
                 .font(.custom("NotoSans-Medium", size: 22))
-                .foregroundColor(Color.black)
+                .foregroundColor(.primary)
                 .padding()
             Menu{
                 Menu{
@@ -52,26 +60,26 @@ struct UpdatePreferenceView: View {
                         Text("NFL 🇺🇸")
                     })
                     .padding()
-                    Toggle(isOn: $AFL, label: {
-                        Text("AFL 🇦🇺")
+                    Toggle(isOn: $NCAAF, label: {
+                        Text("NCAAF 🇺🇸")
                     })
                 }label: {
                     Text("Football 🏈")
                 }
-                Menu{
-                    Button("EPL 🇬🇧") {
-                        EPL = true
-                    }
-                }label: {
-                    Text("Soccer ⚽")
-                }
+//                Menu{
+//                    Button("EPL 🇬🇧") {
+//                        EPL = true
+//                    }
+//                }label: {
+//                    Text("Soccer ⚽")
+//                }
                 Menu{
                     Button("NBA 🇺🇸") {
                         NBA = true
                     }
-                    Button("Euro League 🇪🇺"){
-                        Euroleague = true
-                    }
+//                    Button("Euro League 🇪🇺"){
+//                        Euroleague = true
+//                    }
                 }label: {
                     Text("Basketball 🏀")
                }
@@ -89,20 +97,20 @@ struct UpdatePreferenceView: View {
                 }label: {
                     Text("Ice Hockey 🏒")
                }
-                Menu{
-                    Button("MMA 🥋") {
-                        MMA = true
-                    }
-                }label: {
-                    Text("MMA 🥋")
-               }
-                Menu{
-                    Button("NRL 🇦🇺") {
-                        NRL = true
-                    }
-                }label: {
-                    Text("Rugby 🏉")
-               }
+//                Menu{
+//                    Button("MMA 🥋") {
+//                        MMA = true
+//                    }
+//                }label: {
+//                    Text("MMA 🥋")
+//               }
+//                Menu{
+//                    Button("NRL 🇦🇺") {
+//                        NRL = true
+//                    }
+//                }label: {
+//                    Text("Rugby 🏉")
+//               }
 
             }label: {
                 Label("Sports", systemImage: "sportscourt")
@@ -117,8 +125,8 @@ struct UpdatePreferenceView: View {
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $AFL, label: {
-                        Text("AFL 🇦🇺")
+                    Toggle(isOn: $NCAAF, label: {
+                        Text("NCAAF 🇺🇸")
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
@@ -132,56 +140,62 @@ struct UpdatePreferenceView: View {
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $Euroleague, label: {
-                        Text("Euro League 🇪🇺")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $Euroleague, label: {
+//                        Text("Euro League 🇪🇺")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
                     Toggle(isOn: $NHL, label: {
                         Text("NHL 🇺🇸")
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $MMA, label: {
-                        Text("MMA 🥋")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $NRL, label: {
-                        Text("NRL 🇦🇺")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $EPL, label: {
-                        Text("EPL 🇬🇧")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $MLS, label: {
-                        Text("MLS 🇺🇸")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $MMA, label: {
+//                        Text("MMA 🥋")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $NRL, label: {
+//                        Text("NRL 🇦🇺")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $EPL, label: {
+//                        Text("EPL 🇬🇧")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $MLS, label: {
+//                        Text("MLS 🇺🇸")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
                 }
             }
             Button(action: confirmUpdatedPref, label: {
                 Text("Confirm Changes").padding()
             })
             .buttonStyle(largeButton())
-
         }
         .onAppear{
             let thisPref = session.pref
             NFL = thisPref!.NFL
-            AFL = thisPref!.AFL
+//            AFL = thisPref!.AFL
+            NCAAF = thisPref!.NCAAF
             MLB = thisPref!.MLB
             NBA = thisPref!.NBA
             NHL = thisPref!.NHL
-            Euroleague = thisPref!.Euroleague
-            MMA = thisPref!.MMA
-            NRL = thisPref!.NRL
-            EPL = thisPref!.EPL
-            MLS = thisPref!.MLS
+//            Euroleague = thisPref!.Euroleague
+//            MMA = thisPref!.MMA
+//            NRL = thisPref!.NRL
+//            EPL = thisPref!.EPL
+//            MLS = thisPref!.MLS
+        }
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text("Preference Update Failed!"), message: Text("Please contact us and submit a help ticket"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
+        }
+        .alert(isPresented: $showSuccess) {
+            Alert(title: Text("Preference Updated!"), message: Text("Please return to the app"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
         }
     }
 }
@@ -191,3 +205,4 @@ struct UpdatePreferenceView_Previews: PreviewProvider {
         UpdatePreferenceView()
     }
 }
+//#endif

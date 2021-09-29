@@ -7,6 +7,7 @@
 import UIKit
 import SwiftUI
 
+//#if (arm64)
 struct signUpView : View {
     init() {
         UITableView.appearance().backgroundColor = .clear
@@ -14,9 +15,9 @@ struct signUpView : View {
     
     @State var email: String = ""
     @State var displayName: String = ""
-    @State var state: String = ""
+    @State var state: String = "        "
     @State var error: String = ""
-   // @State var stateIndex = 0
+    @State var degrees = 0.0
     
     let states: [String] = ["Alabama",
             "Alaska",
@@ -69,50 +70,69 @@ struct signUpView : View {
             "Wisconsin",
             "Wyoming"]
     @EnvironmentObject var session: SessionStore
-    
+
     var body: some View{
-        
-        Image("Logo")
-            .padding()
-        VStack{
-            
-        
-        VStack(alignment: .leading, spacing: 20){
-            Text("Create Account")
-                .font(.custom("NotoSans-bold", size: 22))
-                .foregroundColor(.darkOceanBlue)
+            Image("DLogo")
                 .padding()
-            TextField("Username", text: $displayName).autocapitalization(.none).disableAutocorrection(true)
+                .onTapGesture {
+                    withAnimation {
+                        self.degrees += 360
+                    }
+                }
+                .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
+            VStack{
+                VStack(alignment: .leading, spacing: 18){
+                    TextField("Username", text: $displayName)
+                        .keyboardType(.default)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .padding()
+                        .background(Color("lightgrey"))
+                        .cornerRadius(5.0)
+                        .padding()
+                    TextField("Email Address", text: $email)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .padding()
+                        .background(Color("lightgrey"))
+                        .cornerRadius(5.0)
+                        .padding()
+                    Picker(selection: $state, label: Text("State: \(state)")){
+                            ForEach(states, id: \.self){
+                                state in
+                                Text(state).tag(state)
+                    }}.pickerStyle(MenuPickerStyle())
+                      .padding()
+                      .background(Color("lightgrey"))
+                      .cornerRadius(5.0)
+                      .padding()
+                }
+            }.padding()
+             .gesture(
+                 TapGesture()
+                     .onEnded { _ in
+                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                 }
+             )
+            if(UIScreen.main.bounds.height != 667){
+                Spacer()
+            }
+            NavigationLink(destination: ageVerifyView(email: email, displayName: displayName, state: state) ) {Text( "Next")}
+                .disabled(email.isEmpty || displayName.isEmpty)
+                .buttonStyle(largeButton() )
                 .padding()
-            TextField("Email Address", text: $email).autocapitalization(.none).disableAutocorrection(true)
-                .padding()
-//            Text("    Pick Your State:").foregroundColor(.gray)
-        }.padding(.horizontal)
-        .padding(.vertical, 34)
-        VStack{
-            Form {
-            Section{
-                Picker(selection: $state, label: Text("State")){
-                        ForEach(states, id: \.self){
-                            state in
-                            Text(state).tag(state)
-                        }}}.background(Color.white)
-            }.background(Color.white)
-        }}
-            
-        Spacer()
-        NavigationLink(destination: ageVerifyView(email: email, displayName: displayName, state: state) ) {Text( "Next")}
-            .disabled(email.isEmpty || displayName.isEmpty)
-            .buttonStyle(largeButton() )
-        
-        if(error != "") {
-            Text(error)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.red)
-                .padding()
-        }
-//        Spacer()
+            if(error != "") {
+                Text(error)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.red)
+                    .padding()
+            }
+            if(UIScreen.main.bounds.height == 667){
+                Spacer()
+            }
     }
+
 }
 
 struct ageVerifyView: View {
@@ -122,7 +142,9 @@ struct ageVerifyView: View {
     @State var state: String = ""
     @State private var color = Color.red
     @State private var calcAge: DateComponents = DateComponents()
-
+    @State private var activeLink: Bool = false;
+    @State var showAlert: Bool = false;
+    @State private var underage: Bool = true;
     @EnvironmentObject var session: SessionStore
 
     let dateFormatter: DateFormatter = {
@@ -148,26 +170,34 @@ struct ageVerifyView: View {
                 .datePickerStyle(WheelDatePickerStyle())
                 .clipped()
                 .labelsHidden()
-//                .frame(maxHeight: 400)
         }.onChange(of: birthDate, perform: { value in
             calcAge = Calendar.current.dateComponents([.year, .month, .day], from: birthDate, to: Date())
             age = calcAge.year ?? 0
+            if(age > 20){
+                self.underage = false;
+                self.activeLink = true
+            }else{
+                self.activeLink = false;
+                self.underage = true;
+            }
         })
         Text("Your Age: \(calcAge.year ?? 0)")
             .bold()
-            .foregroundColor(Color.white)
-            .colorMultiply(self.color)
+            .foregroundColor(age < 21 ? Color.red : Color.blue)
             .padding()
-            .onTapGesture{
-                withAnimation(.easeInOut(duration: 1)) {
-                    self.color = Color.blue
-                }
-            }
         Spacer()
-        NavigationLink(destination: preferenceView(email: email, displayName: displayName, state: state, age: age)) {
-                                Text("Next")
-        }.disabled(calcAge.year ?? 0 < 18)
-            .buttonStyle(largeButton() )
+        if(underage == false){
+            NavigationLink(destination: preferenceView(email: email, displayName: displayName, state: state, age: age)) {
+                                    Text("Next")
+            }.buttonStyle(largeButton() )
+             .padding()
+        }
+//         .alert(isPresented: $showAlert) {
+//                   Alert(title: Text("User Underage"), message: Text("Please comeback when you are above the age of 20"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
+//          }
+        if(UIScreen.main.bounds.height == 667){
+            Spacer()
+        }
     }
 }
 
@@ -177,15 +207,16 @@ struct preferenceView: View{
     @State var state: String = ""
     @State var age: Int = 0
     @State var NFL: Bool = false
-    @State var AFL: Bool = false
+//    @State var AFL: Bool = false
     @State var MLB: Bool = false
     @State var NBA: Bool = false
     @State var NHL: Bool = false
-    @State var Euroleague: Bool = false
-    @State var MMA: Bool = false
-    @State var NRL: Bool = false
-    @State var EPL: Bool = false
-    @State var MLS: Bool = false
+    @State var NCAAF: Bool = false
+//    @State var Euroleague: Bool = false
+//    @State var MMA: Bool = false
+//    @State var NRL: Bool = false
+//    @State var EPL: Bool = false
+//    @State var MLS: Bool = false
     
     let columns = [
         GridItem(.adaptive(minimum: 100))
@@ -195,7 +226,6 @@ struct preferenceView: View{
     var body: some View {
         
         VStack(alignment: .center, spacing: 10){
-            Spacer()
             Text("Preference")
                 .font(.custom("NotoSans-Medium", size: 22))
                 .foregroundColor(Color.darkOceanBlue)
@@ -210,26 +240,26 @@ struct preferenceView: View{
                         Text("NFL 🇺🇸")
                     })
                     .padding()
-                    Toggle(isOn: $AFL, label: {
-                        Text("AFL 🇦🇺")
+                    Toggle(isOn: $NCAAF, label: {
+                        Text("NCAAF 🇺🇸")
                     })
                 }label: {
                     Text("Football 🏈")
                 }
-                Menu{
-                    Button("EPL 🇬🇧") {
-                        EPL = true
-                    }
-                }label: {
-                    Text("Soccer ⚽")
-                }
+//                Menu{
+//                    Button("EPL 🇬🇧") {
+//                        EPL = true
+//                    }
+//                }label: {
+//                    Text("Soccer ⚽")
+//                }
                 Menu{
                     Button("NBA 🇺🇸") {
                         NBA = true
                     }
-                    Button("Euro League 🇪🇺"){
-                        Euroleague = true
-                    }
+//                    Button("Euro League 🇪🇺"){
+//                        Euroleague = true
+//                    }
                 }label: {
                     Text("Basketball 🏀")
                }
@@ -247,27 +277,26 @@ struct preferenceView: View{
                 }label: {
                     Text("Ice Hockey 🏒")
                }
-                Menu{
-                    Button("MMA 🥋") {
-                        MMA = true
-                    }
-                }label: {
-                    Text("MMA 🥋")
-               }
-                Menu{
-                    Button("NRL 🇦🇺") {
-                        NRL = true
-                    }
-                }label: {
-                    Text("Rugby 🏉")
-               }
+//                Menu{
+//                    Button("MMA 🥋") {
+//                        MMA = true
+//                    }
+//                }label: {
+//                    Text("MMA 🥋")
+//               }
+//                Menu{
+//                    Button("NRL 🇦🇺") {
+//                        NRL = true
+//                    }
+//                }label: {
+//                    Text("Rugby 🏉")
+//               }
 
             }label: {
                 Label("Sports", systemImage: "sportscourt")
                     .accentColor(.blue)
                     .font(.system(size: 22, weight: .semibold))
            }
-            Spacer()
             Spacer()
             ScrollView{
                 LazyVGrid(columns: columns){
@@ -276,8 +305,8 @@ struct preferenceView: View{
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $AFL, label: {
-                        Text("AFL 🇦🇺")
+                    Toggle(isOn: $NCAAF, label: {
+                        Text("NCAAF 🇺🇸")
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
@@ -291,52 +320,48 @@ struct preferenceView: View{
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $Euroleague, label: {
-                        Text("Euro League 🇪🇺")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $Euroleague, label: {
+//                        Text("Euro League 🇪🇺")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
                     Toggle(isOn: $NHL, label: {
                         Text("NHL 🇺🇸")
                     })
                     .padding()
                     .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $MMA, label: {
-                        Text("MMA 🥋")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $NRL, label: {
-                        Text("NRL 🇦🇺")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $EPL, label: {
-                        Text("EPL 🇬🇧")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
-                    Toggle(isOn: $MLS, label: {
-                        Text("MLS 🇺🇸")
-                    })
-                    .padding()
-                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $MMA, label: {
+//                        Text("MMA 🥋")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $NRL, label: {
+//                        Text("NRL 🇦🇺")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $EPL, label: {
+//                        Text("EPL 🇬🇧")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
+//                    Toggle(isOn: $MLS, label: {
+//                        Text("MLS 🇺🇸")
+//                    })
+//                    .padding()
+//                    .toggleStyle(CheckboxStyle())
                 }
                 Spacer()
                 Spacer()
-                Spacer()
-                Spacer()
-                Spacer()
-                Spacer()
-                Spacer()
-                Spacer()
-                NavigationLink(destination: confirmPasswordView(email: email, displayName: displayName, state: state, age: age, NFL: NFL, AFL: AFL, MLB: MLB, NBA: NBA, NHL: NHL, Euroleague: Euroleague, MMA: MMA, NRL: NRL, EPL: EPL, MLS: MLS)) {
-                                        Text("Next")
-                }
-                .buttonStyle(largeButton())
-                .padding()
             }
-    
+            NavigationLink(destination: confirmPasswordView(email: email, displayName: displayName, state: state, age: age, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF)) {
+                                    Text("Next")
+            }
+            .buttonStyle(largeButton())
+            .padding()
+            if(UIScreen.main.bounds.height == 667){
+                Spacer()
+            }
         }
     }
 }
@@ -372,22 +397,23 @@ struct confirmPasswordView: View {
     @State var error: String = ""
     @State var score: [Double] = [20] //Free money
     @State var NFL: Bool = false
-    @State var AFL: Bool = false
+//    @State var AFL: Bool = false
     @State var MLB: Bool = false
     @State var NBA: Bool = false
     @State var NHL: Bool = false
-    @State var Euroleague: Bool = false
-    @State var MMA: Bool = false
-    @State var NRL: Bool = false
-    @State var EPL: Bool = false
-    @State var MLS: Bool = false
+    @State var NCAAF: Bool = false
+//    @State var Euroleague: Bool = false
+//    @State var MMA: Bool = false
+//    @State var NRL: Bool = false
+//    @State var EPL: Bool = false
+//    @State var MLS: Bool = false
     
     @State var profile: UserProfile?
     @State var preference: preference?
     @EnvironmentObject var session: SessionStore
     
     func signUp() {
-        session.signUp(email: email, password: password, displayName: displayName, State: state, age: age, score: score, NFL: NFL, AFL: AFL, MLB: MLB, NBA: NBA, NHL: NHL, Euroleague: Euroleague, MMA: MMA, NRL: NRL, EPL: EPL, MLS: MLS) { (profile, preference, error) in
+        session.signUp(email: email, password: password, displayName: displayName, State: state, age: age, score: score, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF) { (profile, preference, error) in
             if let error = error {
                 self.error = error.localizedDescription
             } else {
@@ -401,27 +427,55 @@ struct confirmPasswordView: View {
     }
     // look into inserting optional tutorial here
     var body: some View {
-        VStack(alignment: .center, spacing: 20){
-            Text("If you need a tutorial in sports betting, you can check out our tutorial in the account settings") .foregroundColor(.black)
-                .frame(width: 350, height: 100, alignment: .center)
-                .font(.custom("NotoSans-Medium", size: 20))
-                .multilineTextAlignment(.center)
-                .padding()
-            SecureField("Password", text: $password).autocapitalization(.none).disableAutocorrection(true)
-                .padding()
-            SecureField("Re-enter Password", text: $rpassword).autocapitalization(.none).disableAutocorrection(true)
-                .padding()
-        }
-        .padding()
+        
+        Text("If you need a tutorial in sports betting, you can check out our tutorial in the account settings") .foregroundColor(.primary)
+            .frame(width: 350, height: 100, alignment: .center)
+            .font(.custom("NotoSans-Medium", size: 20))
+            .multilineTextAlignment(.center)
+            .padding()
+        VStack{
+            VStack(alignment: .leading, spacing: 18){
+
+                TextField("Password", text: $password)
+                    .keyboardType(.default)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .padding()
+                    .background(Color("lightgrey"))
+                    .cornerRadius(5.0)
+                    .padding()
+                SecureField("Re-enter Password", text: $rpassword)
+                    .keyboardType(.default)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .padding()
+                    .background(Color("lightgrey"))
+                    .cornerRadius(5.0)
+                    .padding()
+            }
+        }.padding()
+         .gesture(
+             TapGesture()
+                 .onEnded { _ in
+                     UIApplication.shared.sendAction(#selector(UIResponder .resignFirstResponder), to: nil, from: nil, for: nil)
+             }
+         )
         Spacer()
+        if(UIScreen.main.bounds.height == 667){
+            Spacer()
+        }
         Button(action: signUp) {Text( "Sign Up")}
             .disabled(password != rpassword)
             .buttonStyle(largeButton() )
+            .padding()
         if(error != "") {
             Text(error)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.red)
                 .padding()
+        }
+        if(UIScreen.main.bounds.height == 667){
+            Spacer()
         }
     }
 }
@@ -434,7 +488,7 @@ struct loginView : View {
     @State var profile: UserProfile?
     @State var pref: preference?
     @EnvironmentObject var session: SessionStore
-    
+    @State var degrees = 0.0
     func login() {
         session.signIn(email: email, password: password) { (profile, pref, error) in
             if let error = error {
@@ -449,15 +503,26 @@ struct loginView : View {
             
         }
     }
-    
     var body: some View{
-        
-        Image("Logo")
-        VStack(alignment: .leading, spacing:20){
+
+        Image("DLogo")
+            .onTapGesture {
+                withAnimation {
+                    self.degrees += 360
+                }
+            }
+            .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
+        VStack(alignment: .leading, spacing:18){
             TextField("Email Address", text: $email)
                 .autocapitalization(.none)
                 .padding()
+                .background(Color("lightgrey"))
+                .cornerRadius(5.0)
+                .padding()
             SecureField("Password", text: $password)
+                .padding()
+                .background(Color("lightgrey"))
+                .cornerRadius(5.0)
                 .padding()
             NavigationLink(
                 destination: resetPasswordView(),
@@ -467,18 +532,25 @@ struct loginView : View {
                 .padding(.horizontal)
                 
         }
+        .gesture(
+            TapGesture()
+                .onEnded { _ in
+                    UIApplication.shared.sendAction(#selector(UIResponder .resignFirstResponder), to: nil, from: nil, for: nil)
+            }
+        )
         .padding(.horizontal)
         .padding(.vertical, 34)
-        
-        Spacer()
-        Spacer()
-        Spacer()
-        Spacer()
-        Spacer()
+        if(UIScreen.main.bounds.height != 667){
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+        }
         Spacer()
         Button(action: login) { Text("Login") }
             .buttonStyle(largeButton())
-            .padding(.horizontal, 32)
+            .padding(.horizontal, 30)
         
         if(error != "") {
             Text(error)
@@ -486,30 +558,66 @@ struct loginView : View {
                 .foregroundColor(.red)
                 .padding()
         }
+        if(UIScreen.main.bounds.height == 667){
+            Spacer()
+        }
     }
 }
 
 struct LaunchView: View {
+    @State var shortString = true
+    @State var degrees = 0.0
     var body: some View {
         VStack(alignment: .center, spacing: 35){
-            Image("UnderDogSBOfficial")
+            Image("UnderDogSportsBookOfficial")
+                .onTapGesture {
+                    withAnimation {
+                        self.degrees += 360
+                    }
+                }
+                .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
             // .position(x: 0, y: 50.0)
-            Text("Creating the under dog story one bet at a time")
-                .foregroundColor(.gray)
-                .frame(width: 200, height: 100, alignment: .center)
-                .font(.custom("NotoSans-Medium", size: 20))
-                .multilineTextAlignment(.center)
-              // .position(x: 0, y: 70)
+//            Text("Creating the under dog story one bet at a time")
+//                .foregroundColor(.gray)
+//                .frame(width: 200, height: 100, alignment: .center)
+//                .font(.custom("NotoSans-Medium", size: 15))
+//                .multilineTextAlignment(.center)
+            TextAnimation()
             Spacer()
             NavigationLink(destination: signUpView(), label: {Text( "Sign Up")} )
-            //    .position(x: 0, y: 70)
             NavigationLink(destination: loginView(), label: {Text( "Login")} )
-  //              .position(x: 190, y: 0)
         }
             .buttonStyle(largeButton() )
             .padding()
+        if(UIScreen.main.bounds.height == 667){
+            Spacer()
+        }
     }
 }
+
+public struct TextAnimation: View {
+
+    public init(){ }
+    @State var text: String = ""
+    public var body: some View {
+      VStack{
+        Text(text)
+            .animation(.spring())
+            .foregroundColor(.gray)
+            .frame(width: 200, height: 100, alignment: .center)
+            .font(.system(size: 20))
+//            .multilineTextAlignment(.center)
+      }.onAppear() {
+          text = ""
+          "Creating the underdog story one bet at a time.".enumerated().forEach { index, character in
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
+              text += String(character)
+            }
+          }
+      }
+    }
+}
+
 
 struct resetPasswordView : View {
     @State private var emailSent = false
@@ -551,6 +659,7 @@ struct UpdatePasswordView: View {
     @State var email: String = ""
     @State var newPassword: String = ""
     @State private var showingAlert = false
+    @State private var showSuccess = false
     @EnvironmentObject var session: SessionStore
     func changePassword() {
         session.changePassword(email: email, currentPassword: currentPassword, newPassword: newPassword)
@@ -569,10 +678,28 @@ struct UpdatePasswordView: View {
             Text("Update Password")
                 .font(.system(size: 30, weight: .bold, design: .rounded))
                 .padding()
-            TextField("Email Address", text: $email).padding(.horizontal).autocapitalization(.none).disableAutocorrection(true)
-            TextField("Current Password", text: $currentPassword).autocapitalization(.none)
-                .padding(.horizontal)
-            TextField("New Password", text: $newPassword).padding(.horizontal).autocapitalization(.none)
+            TextField("Email Address", text: $email)
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .padding()
+                .background(Color("lightgrey"))
+                .cornerRadius(5.0)
+                .padding()
+            TextField("Current Password", text: $currentPassword)
+                .keyboardType(.default)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color("lightgrey"))
+                .cornerRadius(5.0)
+                .padding()
+            SecureField("New Password", text: $newPassword)
+                .keyboardType(.default)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color("lightgrey"))
+                .cornerRadius(5.0)
+                .padding()
             NavigationLink(
                     destination: resetPasswordView(),
                     label: {
@@ -580,7 +707,10 @@ struct UpdatePasswordView: View {
                     })
                     .padding(.horizontal)
                 Button("Change Password"){if(error != ""){ showingAlert = true;}
-                else {changePassword()}}
+                else {
+                    changePassword();
+                    showSuccess = true;
+                }}
                     .padding()
                       //  Text("Incorrect Email/Password")
                         //    .font(.system(size: 14, weight: .semibold))
@@ -591,8 +721,19 @@ struct UpdatePasswordView: View {
             .frame(maxHeight: .infinity,
               alignment: .top)
             .alert(isPresented: $showingAlert) {
-                        Alert(title: Text("Incorrect Email/Password"), message: Text("Please Enter the Correct Email/Password"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
-                    }            }
+                Alert(title: Text("Incorrect Email/Password"), message: Text("Please Enter the Correct Email/Password"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
+            }
+                
+            }
+             .gesture(
+                 TapGesture()
+                     .onEnded { _ in
+                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                 }
+             )
+            .alert(isPresented: $showSuccess) {
+                Alert(title: Text("Password Updated!"), message: Text("Please return to the app"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
+            }
         }
 }
 
@@ -612,8 +753,11 @@ struct largeButton: ButtonStyle {
         .cornerRadius(6)
         .background(Color("Button Color"))
         .overlay(RoundedRectangle(cornerRadius: 6)
-                .stroke(Color("Button Color"), lineWidth: 4))
+                .stroke(Color("Button Color"), lineWidth: 1))
+                .scaleEffect(configuration.isPressed ? 1.2 : 1)
+                .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
         .font(.custom("NotoSans-Medium", size: 18))
+        .opacity(configuration.isPressed ? 0.7 : 1)
     }
 }
-
+//#endif

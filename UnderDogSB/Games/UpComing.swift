@@ -7,6 +7,7 @@
 import Foundation
 import SwiftUI
 
+//#if (arm64)
 struct UpComing: View {
     @State var games: [Match] = []
     @Binding var gamed : Match
@@ -19,6 +20,7 @@ struct UpComing: View {
                             "basketball_nba": "🏀",
                             "americanfootball_nfl": "🏈",
                             "aussierules_afl": "🏈",
+                            "americanfootball_ncaaf": "🏈",
                             "baseball_mlb": "⚾",
                             "mma_mixed_martial_arts": "🥋",
                             "icehockey_nhl": "🏒"]
@@ -92,3 +94,4 @@ struct UpComing: View {
             }
     }
 }
+//#endif

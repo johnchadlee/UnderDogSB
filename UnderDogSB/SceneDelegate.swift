@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 
+//#if (arm64)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -68,4 +69,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-
+//#endif

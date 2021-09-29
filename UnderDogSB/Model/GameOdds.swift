@@ -20,12 +20,86 @@ struct Match: Codable, Identifiable {
     let sports_key: String
 }
 
+
 class GameOddsRepo: ObservableObject {
     private var db = Firestore.firestore()
     
-    func FindUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+    func MLBUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
             var upcoming: [Match] = []
-            db.collection("MLBOdds").addSnapshotListener { querySnapshot, error in
+        
+            db.collection("mlb_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching mlbGames: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func NBAUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("nba_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching mlbGames: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func NFLUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("nfl_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching mlbGames: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func NHLUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("nhl_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching mlbGames: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func NCAAFUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("ncaaf_odds").addSnapshotListener { querySnapshot, error in
                 guard querySnapshot != nil else{
                     print("Error fetching mlbGames: \(error)")
                     return

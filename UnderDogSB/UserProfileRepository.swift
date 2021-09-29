@@ -9,6 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
+//#if (arm64)
 struct UserProfile: Codable {
   var uid: String
   var displayName: String
@@ -20,15 +21,16 @@ struct UserProfile: Codable {
 
 struct preference: Codable {
   var NFL: Bool
-  var AFL: Bool
+//  var AFL: Bool
   var MLB: Bool
   var NBA: Bool
   var NHL: Bool
-  var Euroleague: Bool
-  var MMA: Bool
-  var NRL: Bool
-  var EPL: Bool
-  var MLS: Bool
+  var NCAAF: Bool
+//  var Euroleague: Bool
+//  var MMA: Bool
+//  var NRL: Bool
+//  var EPL: Bool
+//  var MLS: Bool
 }
 
 class UserProfileRepository: ObservableObject {
@@ -81,18 +83,13 @@ class UserProfileRepository: ObservableObject {
             completion(pref, error)
         }
     }
-    func updatePref(userId: String, NFL:Bool, AFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, Euroleague: Bool, MMA: Bool, NRL: Bool, EPL: Bool, MLS: Bool, completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
+    func updatePref(userId: String, NFL:Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
         db.collection("users").document(userId).collection("preference").document("preference").updateData([
             "NFL": NFL,
-            "AFL": AFL,
             "MLB": MLB,
             "NHL": NHL,
             "NBA": NBA,
-            "Eueroleague": Euroleague,
-            "MMA": MMA,
-            "NRL": NRL,
-            "EPL": EPL,
-            "MLS": MLS
+            "NCAAF": NCAAF
         ]) { err in
             if let err = err {
                 print("Error updating document: \(err)")
@@ -137,3 +134,4 @@ class UserProfileRepository: ObservableObject {
         }
     }
 }
+//#endif

@@ -157,4 +157,17 @@ class OddsApi {
         }
         .resume()
     }
+    func getNCAAFOdds(completion: @escaping ([Datum]) -> () ) {
+        
+        guard let url = URL(string: "https://api.the-odds-api.com/v3/odds/?apiKey=2070c40f8391b3c091261733bb2b4094&sport=americanfootball_ncaaf&region=us&mkt=h2h") else { return }
+
+        URLSession.shared.dataTask(with: url) { (info, _, _) in
+            let games = try! JSONDecoder().decode(Welcome.self, from: info!)
+            
+            DispatchQueue.main.async {
+                completion(games.data)
+            }
+        }
+        .resume()
+    }
 }

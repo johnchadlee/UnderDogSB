@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 import Combine
 
+//#if (arm64)
 // Creating the NumberPad
 enum CalcButton: String
 {
@@ -108,6 +109,14 @@ struct BettingView: View {
     var body: some View {
         VStack {
             HStack(spacing: 50){
+                if(UIScreen.main.bounds.height == 667){
+                    VStack{
+                        Text("Amount")
+                            .foregroundColor(.yellow)
+                        Text("$\(value)")
+                            .foregroundColor(.yellow)
+                    }
+                }
                 VStack{
                     Text("Gain")
                         .foregroundColor(.white)
@@ -148,10 +157,12 @@ struct BettingView: View {
                 }
             }
             Section{
-                Text("Betting Amount: " + value)
-                    .foregroundColor(.yellow)
+                if(UIScreen.main.bounds.height != 667){
+                    Text("Betting Amount: " + value)
+                        .foregroundColor(.yellow)
+                        .padding()
+                }
             }
-            .padding()
             Section{
                 Button("Place Bet") {
                     if(Double(buyingPower) < Double(value) ?? 0 || Double(value) == 0 ) {
@@ -218,3 +229,4 @@ struct BettingView: View {
             return (UIScreen.main.bounds.width - (5*12)) / 4
         }
 }
+//#endif

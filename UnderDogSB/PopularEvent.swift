@@ -2,6 +2,7 @@
 import Foundation
 import SwiftUI
 
+//#if (arm64)
 struct UpcomingNBA: View {
     @State var games: [Datum] = []
     @EnvironmentObject var session: SessionStore
@@ -99,7 +100,14 @@ struct NBAView: View{
     @State var OddsAmount = []
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
     var body: some View {
         VStack{
 //            Text("NBA Bets")
@@ -112,7 +120,7 @@ struct NBAView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -230,6 +238,14 @@ struct SoccerEPLView: View{
     @State var OddsAmount = []
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
     
     var body: some View {
         VStack{
@@ -242,7 +258,7 @@ struct SoccerEPLView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 1000)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -360,6 +376,14 @@ struct RugbyView: View{
     @State var OddsAmount = []
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
     
     var body: some View {
         VStack{
@@ -373,7 +397,7 @@ struct RugbyView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -492,6 +516,15 @@ struct EuroLeagueBBView: View{
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
     
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
     var body: some View {
         VStack{
 //    Text("Euro League Basketball Bets")
@@ -504,7 +537,7 @@ struct EuroLeagueBBView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -623,6 +656,15 @@ struct MLBView: View{
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
     
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
     var body: some View {
         VStack{
 //    Text("NBA Bets")
@@ -637,7 +679,7 @@ struct MLBView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -756,6 +798,15 @@ struct MLSView: View{
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
     
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
     var body: some View {
         VStack{
 //        Text("NBA Bets")
@@ -768,7 +819,7 @@ struct MLSView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -887,6 +938,15 @@ struct MMAView: View{
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
     
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
     var body: some View {
         VStack{
 //    Text("MMA Bets")
@@ -899,7 +959,7 @@ struct MMAView: View{
         //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -1018,6 +1078,15 @@ struct NFLView: View{
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
     
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
     var body: some View {
         VStack{
 //            Text("NBA Bets")
@@ -1030,7 +1099,7 @@ struct NFLView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -1149,6 +1218,15 @@ struct AUFootballView: View{
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
     
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
     var body: some View {
         VStack{
 //            Text("Australian Football Bets")
@@ -1161,7 +1239,7 @@ struct AUFootballView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -1181,6 +1259,147 @@ struct AUFootballView: View{
         }
     }
 }
+
+struct UpcomingNCAAF: View {
+    @State var games: [Datum] = []
+    @EnvironmentObject var session: SessionStore
+    @Binding var gamed : Datum
+    @Binding var bottomSheetShown : Bool
+    @State var sportsTag = ["rugbyleague_nrl": "🏉",
+                            "soccer_epl": "⚽",
+                            "soccer_usa_mls": "⚽",
+                            "basketball_euroleague": "🏀",
+                            "basketball_nba": "🏀",
+                            "americanfootball_nfl": "🏈",
+                            "americanfootball_ncaaf": "🏈",
+                            "baseball_mlb": "⚾",
+                            "mma_mixed_martial_arts": "🥋",
+                            "icehockey_nhl": "🏒"]
+    
+    var body: some View {
+            List{
+                ForEach(games) { game in
+                    VStack{
+                        Spacer()
+                        HStack{
+                            Spacer()
+                            VStack{
+                                Text("Teams \(sportsTag[game.sportKey]!)")
+                                Divider()
+                                Text(game.teams[0])
+                                    .font(.system(size: 15))
+                                Divider()
+                                Text(game.teams[1])
+                                    .font(.system(size: 15))
+                                    Spacer()
+                            }
+                            Spacer()
+                            VStack(spacing: 0){
+                            HStack(alignment: .center, spacing: 20){
+                                Text("Win")
+                                Text("Lose")
+                            }
+                            HStack{
+                                Spacer()
+                            VStack{
+                               Spacer()
+                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Divider()
+                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Spacer()
+                            }
+                            VStack{
+                                Spacer()
+                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Spacer()
+                            }
+                                Spacer()
+                            }
+                            .background(Rectangle().fill(Color.green))
+                            .cornerRadius(5)
+                            .padding()
+                            Spacer()
+                            }
+                            Spacer()
+                        }
+                        //End of HStack
+                        .onTapGesture{
+                            self.bottomSheetShown.toggle()
+                            gamed = game
+                        }
+                        Spacer()
+                    }       //End of VStack
+                    .padding()
+                }
+            }
+            .onAppear{
+                    OddsApi().getNCAAFOdds{
+                        (games) in
+                        if self.games.isEmpty {
+                            self.games = games
+                        }
+                        else {
+                            self.games += games
+                        }
+
+                    }
+            }
+    }
+}
+
+struct NCAAFView: View{
+    @State var games: [Datum] = []
+    @EnvironmentObject var session: SessionStore
+    @State private var bottomSheetShown = false
+    @State private var Odds = 0
+    @State var OddsAmount = []
+    @State private var hidesheet = false
+    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    
+    var body: some View {
+        VStack{
+//            Text("Australian Football Bets")
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                        .offset(x: -5.0, y: 5.0)
+//                        .font(.custom("NotoSans-Medium", size: 25))
+//                .padding()
+            UpcomingNCAAF(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
+            
+            //Show all games that matches with preference
+            if (bottomSheetShown != false) {
+                GeometryReader{ geometry in
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
+                        VStack {
+                            let win1 = gamed.sites[0].odds.h2H[0]
+                            let lose1  = -gamed.sites[0].odds.h2H[0]
+                            let win2 = gamed.sites[0].odds.h2H[1]
+                            let lose2 = -gamed.sites[0].odds.h2H[1]
+                            let OddsAmount = [win1, lose2, win2, lose1]
+                            let team_Name1 = gamed.teams[0]
+                            let team_Name2 = gamed.teams[1]
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
+                        }
+                        .padding(geometry.safeAreaInsets)
+                        .transition(.move(edge: .leading))
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
+    }
+}
+
 
 struct UpcomingNHL: View {
     @State var games: [Datum] = []
@@ -1279,7 +1498,14 @@ struct NHLView: View{
     @State var OddsAmount = []
     @State private var hidesheet = false
     @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
     var body: some View {
         VStack{
 //        Text("NHL Bets")
@@ -1292,7 +1518,7 @@ struct NHLView: View{
             //Show all games that matches with preference
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: 830)  {
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
                             let win1 = gamed.sites[0].odds.h2H[0]
                             let lose1  = -gamed.sites[0].odds.h2H[0]
@@ -1313,3 +1539,4 @@ struct NHLView: View{
     }
 }
 
+//#endif

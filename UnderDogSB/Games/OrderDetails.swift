@@ -8,6 +8,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
+//#if (arm64)
 struct OrderDetails: Codable, Identifiable {
   var id: String = ""
   var time: String = ""
@@ -154,3 +155,4 @@ class OrderRepository: ObservableObject {
         db.collection("users").document(userId).collection("On Going Bet").document(orderID).delete()
     }
 }
+//#endif

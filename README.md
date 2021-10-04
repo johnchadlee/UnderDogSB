@@ -64,4 +64,9 @@ We included the following features below:
 ![Simulator Screen Shot - iPhone X - 2021-10-03 at 23 48 29](https://user-![Simulator Screen Shot - iPhone X - 2021-10-03 at 23 48 38](https://user-images.githubusercontent.com/31326034/135805857-59165750-0747-4488-b9d4-b733bb193f08.png){:height="50%" width="50%"}
 ![simulator_screenshot_B903FDF4-F49C-4A48-B687-6B97D4814021](https://user-images.githubusercontent.com/31326034/135805806-6d34b3f1-25f5-489d-b083-f220d02a557c.png){:height="50%" width="50%"}
 ![Simulator Screen Shot - iPhone X - 2021-10-03 at 23 48 38](https://user-images.githubusercontent.com/31326034/135806129-3cf7aa29-4db8-448a-9269-2fc2bca8f77b.png){:height="50%" width="50%"}
+<img src="https://user-images.githubusercontent.com/31326034/135805670-de7391c6-3f9f-47d6-a4ae-ec19bbc68002.png" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/31326034/135805806-6d34b3f1-25f5-489d-b083-f220d02a557c.png" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/31326034/135805806-6d34b3f1-25f5-489d-b083-f220d02a557c.png" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/31326034/135806129-3cf7aa29-4db8-448a-9269-2fc2bca8f77b.png" width="50%" height="50%">
+
 

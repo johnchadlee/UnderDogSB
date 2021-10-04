@@ -68,3 +68,6 @@ We included the following features below:
 <img src="https://user-images.githubusercontent.com/31326034/135807344-7b037be9-b6a2-43a2-9dfb-7bfccc39119d.png" width="25%" height="25%">
 <img src="https://user-images.githubusercontent.com/31326034/135807346-36a12645-2e15-4f87-80e9-e45bcae9144f.png" width="25%" height="25%">
 <img src="https://user-images.githubusercontent.com/31326034/135807350-f3645058-4373-4385-aa58-2b437403cdf5.png" width="25%" height="25%">
+
+#### We are currently beta testing!
+Please download testflight and install our app via this link https://testflight.apple.com/join/LfqKJWnd

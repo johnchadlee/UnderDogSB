@@ -1,19 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "Scroll Group 2-2.png",
+      "filename" : "40.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
-      "filename" : "Scroll Group 2-3.png",
+      "filename" : "60.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "20x20"
     },
     {
-      "filename" : "Scroll Group 2-1.png",
+      "filename" : "58-1.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "29x29"
@@ -37,7 +37,7 @@
       "size" : "40x40"
     },
     {
-      "filename" : "Scroll Group 2.png",
+      "filename" : "120-1.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
@@ -55,7 +55,7 @@
       "size" : "20x20"
     },
     {
-      "filename" : "40.png",
+      "filename" : "40-2.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "20x20"
@@ -115,13 +115,13 @@
       "size" : "16x16"
     },
     {
-      "filename" : "32-1.png",
+      "filename" : "32.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "32.png",
+      "filename" : "32-1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
@@ -157,13 +157,13 @@
       "size" : "256x256"
     },
     {
-      "filename" : "playstore.png",
+      "filename" : "512-1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "appstore.png",
+      "filename" : "1024-1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"

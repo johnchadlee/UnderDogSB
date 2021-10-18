@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EB47B49A26DD906B00843038"
-               BuildableName = "UnderDogSB.app"
+               BuildableName = "RalliSports.app"
                BlueprintName = "UnderDogSB"
                ReferencedContainer = "container:UnderDogSB.xcodeproj">
             </BuildableReference>
@@ -79,7 +79,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EB47B49A26DD906B00843038"
-            BuildableName = "UnderDogSB.app"
+            BuildableName = "RalliSports.app"
             BlueprintName = "UnderDogSB"
             ReferencedContainer = "container:UnderDogSB.xcodeproj">
          </BuildableReference>
@@ -96,7 +96,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EB47B49A26DD906B00843038"
-            BuildableName = "UnderDogSB.app"
+            BuildableName = "RalliSports.app"
             BlueprintName = "UnderDogSB"
             ReferencedContainer = "container:UnderDogSB.xcodeproj">
          </BuildableReference>

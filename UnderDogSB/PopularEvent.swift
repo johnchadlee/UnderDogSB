@@ -4,9 +4,9 @@ import SwiftUI
 
 //#if (arm64)
 struct UpcomingNBA: View {
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
+    @Binding var gamed : Match
     @Binding var bottomSheetShown : Bool
     @State var sportsTag = ["rugbyleague_nrl": "🏉",
                             "soccer_epl": "⚽",
@@ -20,19 +20,29 @@ struct UpcomingNBA: View {
                             "icehockey_nhl": "🏒"]
     
     var body: some View {
-            List{
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
                 ForEach(games) { game in
                     VStack{
-                        Spacer()
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
                         HStack{
                             Spacer()
                             VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
+                                Text("Teams \(sportsTag[game.sports_key]!)")
                                 Divider()
-                                Text(game.teams[0])
+                                Text(game.away_team)
                                     .font(.system(size: 15))
                                 Divider()
-                                Text(game.teams[1])
+                                Text(game.home_team)
                                     .font(.system(size: 15))
                                     Spacer()
                             }
@@ -46,16 +56,18 @@ struct UpcomingNBA: View {
                                 Spacer()
                             VStack{
                                Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                             VStack{
                                 Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                                 Spacer()
@@ -74,32 +86,39 @@ struct UpcomingNBA: View {
                         }
                         Spacer()
                     }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
                     .padding()
                 }
             }
             .onAppear{
-                    OddsApi().getUSBasketBallOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
+//                session.getNBAGames();
+                self.games = session.NBAGames;
             }
+        }
     }
 }
 
 struct NBAView: View{
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
     @State private var bottomSheetShown = false
     @State private var Odds = 0
     @State var OddsAmount = []
     @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
     var bottomSheetHeight: Int {
         if(UIScreen.main.bounds.height == 667){
             return 660;
@@ -110,11 +129,6 @@ struct NBAView: View{
     }
     var body: some View {
         VStack{
-//            Text("NBA Bets")
-//            .frame(maxWidth: .infinity, alignment: .leading)
-//                    .offset(x: 30.0, y: 5.0)
-//                    .font(.custom("NotoSans-Medium", size: 25))
-//            .padding()
             UpcomingNBA(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
             
             //Show all games that matches with preference
@@ -122,431 +136,18 @@ struct NBAView: View{
                 GeometryReader{ geometry in
                     BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
                             let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
-                        }
-                        .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                }
-            }
-        }
-    }
-}
-
-struct UpcomingSoccerEPL: View {
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
-    @Binding var bottomSheetShown : Bool
-    @State var sportsTag = ["rugbyleague_nrl": "🏉",
-                            "soccer_epl": "⚽",
-                            "soccer_usa_mls": "⚽",
-                            "basketball_euroleague": "🏀",
-                            "basketball_nba": "🏀",
-                            "americanfootball_nfl": "🏈",
-                            "aussierules_afl": "🏈",
-                            "baseball_mlb": "⚾",
-                            "mma_mixed_martial_arts": "🥋",
-                            "icehockey_nhl": "🏒"]
-    
-    var body: some View {
-            List{
-                ForEach(games) { game in
-                    VStack{
-                        Spacer()
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
-                                Divider()
-                                Text(game.teams[0])
-                                    .font(.system(size: 15))
-                                Divider()
-                                Text(game.teams[1])
-                                    .font(.system(size: 15))
-                                    Spacer()
-                            }
-                            Spacer()
-                            VStack(spacing: 0){
-                            HStack(alignment: .center, spacing: 20){
-                                Text("Win")
-                                Text("Lose")
-                            }
-                            HStack{
-                                Spacer()
-                            VStack{
-                               Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Spacer()
-                            }
-                            VStack{
-                                Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Spacer()
-                            }
-                                Spacer()
-                            }
-                            .background(Rectangle().fill(Color.green))
-                            .cornerRadius(5)
-                            .padding()
-                            Spacer()
-                            }
-                            Spacer()
-                        }
-                        //End of HStack
-                        .onTapGesture{
-                            self.bottomSheetShown.toggle()
-                            gamed = game
-                        }
-                        Spacer()
-                    }       //End of VStack
-                    .padding()
-                }
-            }
-            .onAppear{
-                    OddsApi().getUKSoccerOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
-            }
-    }
-}
-
-struct SoccerEPLView: View{
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @State private var bottomSheetShown = false
-    @State private var Odds = 0
-    @State var OddsAmount = []
-    @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    var bottomSheetHeight: Int {
-        if(UIScreen.main.bounds.height == 667){
-            return 660;
-        }
-        else{
-            return 780;
-        }
-    }
-    
-    var body: some View {
-        VStack{
-//    Text("EPL Bets")
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//                .offset(x: -5.0, y: 5.0)
-//                .font(.custom("NotoSans-Medium", size: 25))
-//        .padding()
-            UpcomingSoccerEPL(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-            //Show all games that matches with preference
-            if (bottomSheetShown != false) {
-                GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
-                        VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
-                            let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
-                        }
-                        .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                }
-            }
-        }
-    }
-}
-
-struct UpcomingRugby: View {
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
-    @Binding var bottomSheetShown : Bool
-    @State var sportsTag = ["rugbyleague_nrl": "🏉",
-                            "soccer_epl": "⚽",
-                            "soccer_usa_mls": "⚽",
-                            "basketball_euroleague": "🏀",
-                            "basketball_nba": "🏀",
-                            "americanfootball_nfl": "🏈",
-                            "aussierules_afl": "🏈",
-                            "baseball_mlb": "⚾",
-                            "mma_mixed_martial_arts": "🥋",
-                            "icehockey_nhl": "🏒"]
-    
-    var body: some View {
-            List{
-                ForEach(games) { game in
-                    VStack{
-                        Spacer()
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
-                                Divider()
-                                Text(game.teams[0])
-                                    .font(.system(size: 15))
-                                Divider()
-                                Text(game.teams[1])
-                                    .font(.system(size: 15))
-                                    Spacer()
-                            }
-                            Spacer()
-                            VStack(spacing: 0){
-                            HStack(alignment: .center, spacing: 20){
-                                Text("Win")
-                                Text("Lose")
-                            }
-                            HStack{
-                                Spacer()
-                            VStack{
-                               Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Spacer()
-                            }
-                            VStack{
-                                Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Spacer()
-                            }
-                                Spacer()
-                            }
-                            .background(Rectangle().fill(Color.green))
-                            .cornerRadius(5)
-                            .padding()
-                            Spacer()
-                            }
-                            Spacer()
-                        }
-                        //End of HStack
-                        .onTapGesture{
-                            self.bottomSheetShown.toggle()
-                            gamed = game
-                        }
-                        Spacer()
-                    }       //End of VStack
-                    .padding()
-                }
-            }
-            .onAppear{
-                    OddsApi().getAURugbyOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
-            }
-    }
-}
-
-struct RugbyView: View{
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @State private var bottomSheetShown = false
-    @State private var Odds = 0
-    @State var OddsAmount = []
-    @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    var bottomSheetHeight: Int {
-        if(UIScreen.main.bounds.height == 667){
-            return 660;
-        }
-        else{
-            return 780;
-        }
-    }
-    
-    var body: some View {
-        VStack{
-//        Text("AU Rugby Bets")
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//                .offset(x: -5.0, y: 5.0)
-//                .font(.custom("NotoSans-Medium", size: 25))
-//        .padding()
-            UpcomingRugby(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-        
-            //Show all games that matches with preference
-            if (bottomSheetShown != false) {
-                GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
-                        VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
-                            let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
-                        }
-                        .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                        }
-            }
-        }
-    }
-}
-
-struct UpcomingEuroLeague: View {
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
-    @Binding var bottomSheetShown : Bool
-    @State var sportsTag = ["rugbyleague_nrl": "🏉",
-                            "soccer_epl": "⚽",
-                            "soccer_usa_mls": "⚽",
-                            "basketball_euroleague": "🏀",
-                            "basketball_nba": "🏀",
-                            "americanfootball_nfl": "🏈",
-                            "aussierules_afl": "🏈",
-                            "baseball_mlb": "⚾",
-                            "mma_mixed_martial_arts": "🥋",
-                            "icehockey_nhl": "🏒"]
-    
-    var body: some View {
-            List{
-                ForEach(games) { game in
-                    VStack{
-                        Spacer()
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
-                                Divider()
-                                Text(game.teams[0])
-                                    .font(.system(size: 15))
-                                Divider()
-                                Text(game.teams[1])
-                                    .font(.system(size: 15))
-                                    Spacer()
-                            }
-                            Spacer()
-                            VStack(spacing: 0){
-                            HStack(alignment: .center, spacing: 20){
-                                Text("Win")
-                                Text("Lose")
-                            }
-                            HStack{
-                                Spacer()
-                            VStack{
-                               Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Spacer()
-                            }
-                            VStack{
-                                Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Spacer()
-                            }
-                                Spacer()
-                            }
-                            .background(Rectangle().fill(Color.green))
-                            .cornerRadius(5)
-                            .padding()
-                            Spacer()
-                            }
-                            Spacer()
-                        }
-                        //End of HStack
-                        .onTapGesture{
-                            self.bottomSheetShown.toggle()
-                            gamed = game
-                        }
-                        Spacer()
-                    }       //End of VStack
-                    .padding()
-                }
-            }
-            .onAppear{
-                    OddsApi().getEUBasketBallOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
-            }
-    }
-}
-
-struct EuroLeagueBBView: View{
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @State private var bottomSheetShown = false
-    @State private var Odds = 0
-    @State var OddsAmount = []
-    @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    
-    var bottomSheetHeight: Int {
-        if(UIScreen.main.bounds.height == 667){
-            return 660;
-        }
-        else{
-            return 780;
-        }
-    }
-    
-    var body: some View {
-        VStack{
-//    Text("Euro League Basketball Bets")
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//                .offset(x: -5.0, y: 5.0)
-//                .font(.custom("NotoSans-Medium", size: 25))
-//        .padding()
-            UpcomingEuroLeague(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-    
-            //Show all games that matches with preference
-            if (bottomSheetShown != false) {
-                GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
-                        VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
-                            let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
                         }
                         .padding(geometry.safeAreaInsets)
                         .transition(.move(edge: .leading))
@@ -559,9 +160,9 @@ struct EuroLeagueBBView: View{
 }
 
 struct UpcomingMLB: View {
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
+    @Binding var gamed : Match
     @Binding var bottomSheetShown : Bool
     @State var sportsTag = ["rugbyleague_nrl": "🏉",
                             "soccer_epl": "⚽",
@@ -575,19 +176,29 @@ struct UpcomingMLB: View {
                             "icehockey_nhl": "🏒"]
     
     var body: some View {
-            List{
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
                 ForEach(games) { game in
                     VStack{
-                        Spacer()
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
                         HStack{
                             Spacer()
                             VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
+                                Text("Teams \(sportsTag[game.sports_key]!)")
                                 Divider()
-                                Text(game.teams[0])
+                                Text(game.away_team)
                                     .font(.system(size: 15))
                                 Divider()
-                                Text(game.teams[1])
+                                Text(game.home_team)
                                     .font(.system(size: 15))
                                     Spacer()
                             }
@@ -601,16 +212,18 @@ struct UpcomingMLB: View {
                                 Spacer()
                             VStack{
                                Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                             VStack{
                                 Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                                 Spacer()
@@ -629,32 +242,39 @@ struct UpcomingMLB: View {
                         }
                         Spacer()
                     }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
                     .padding()
                 }
             }
+        }
             .onAppear{
-                    OddsApi().getUSBaseballOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
+//                session.getMLBGames();
+                self.games = session.MLBGames;
             }
     }
 }
 
 struct MLBView: View{
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
     @State private var bottomSheetShown = false
     @State private var Odds = 0
     @State var OddsAmount = []
     @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
     
     var bottomSheetHeight: Int {
         if(UIScreen.main.bounds.height == 667){
@@ -666,14 +286,8 @@ struct MLBView: View{
     }
     
     var body: some View {
+
         VStack{
-//    Text("NBA Bets")
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//                .offset(x: -5.0, y: 5.0)
-//                .font(.custom("NotoSans-Medium", size: 25))
-//        .padding()
-            
-            
             UpcomingMLB(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
     
             //Show all games that matches with preference
@@ -681,14 +295,18 @@ struct MLBView: View{
                 GeometryReader{ geometry in
                     BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
                             let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
                         }
                         .padding(geometry.safeAreaInsets)
                         .transition(.move(edge: .leading))
@@ -699,291 +317,14 @@ struct MLBView: View{
         }
     }
 }
+//
 
-struct UpcomingMLS: View {
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
-    @Binding var bottomSheetShown : Bool
-    @State var sportsTag = ["rugbyleague_nrl": "🏉",
-                            "soccer_epl": "⚽",
-                            "soccer_usa_mls": "⚽",
-                            "basketball_euroleague": "🏀",
-                            "basketball_nba": "🏀",
-                            "americanfootball_nfl": "🏈",
-                            "aussierules_afl": "🏈",
-                            "baseball_mlb": "⚾",
-                            "mma_mixed_martial_arts": "🥋",
-                            "icehockey_nhl": "🏒"]
-    
-    var body: some View {
-            List{
-                ForEach(games) { game in
-                    VStack{
-                        Spacer()
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
-                                Divider()
-                                Text(game.teams[0])
-                                    .font(.system(size: 15))
-                                Divider()
-                                Text(game.teams[1])
-                                    .font(.system(size: 15))
-                                    Spacer()
-                            }
-                            Spacer()
-                            VStack(spacing: 0){
-                            HStack(alignment: .center, spacing: 20){
-                                Text("Win")
-                                Text("Lose")
-                            }
-                            HStack{
-                                Spacer()
-                            VStack{
-                               Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Spacer()
-                            }
-                            VStack{
-                                Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Spacer()
-                            }
-                                Spacer()
-                            }
-                            .background(Rectangle().fill(Color.green))
-                            .cornerRadius(5)
-                            .padding()
-                            Spacer()
-                            }
-                            Spacer()
-                        }
-                        //End of HStack
-                        .onTapGesture{
-                            self.bottomSheetShown.toggle()
-                            gamed = game
-                        }
-                        Spacer()
-                    }       //End of VStack
-                    .padding()
-                }
-            }
-            .onAppear{
-                    OddsApi().getUSSoccerOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
-            }
-    }
-}
-
-struct MLSView: View{
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @State private var bottomSheetShown = false
-    @State private var Odds = 0
-    @State var OddsAmount = []
-    @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    
-    var bottomSheetHeight: Int {
-        if(UIScreen.main.bounds.height == 667){
-            return 660;
-        }
-        else{
-            return 780;
-        }
-    }
-    
-    var body: some View {
-        VStack{
-//        Text("NBA Bets")
-//            .frame(maxWidth: .infinity, alignment: .leading)
-//                    .offset(x: -5.0, y: 5.0)
-//                    .font(.custom("NotoSans-Medium", size: 25))
-//            .padding()
-            UpcomingMLS(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-    
-            //Show all games that matches with preference
-            if (bottomSheetShown != false) {
-                GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
-                        VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
-                            let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
-                        }
-                        .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                }
-            }
-        }
-    }
-}
-
-struct UpcomingMMA: View {
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
-    @Binding var bottomSheetShown : Bool
-    @State var sportsTag = ["rugbyleague_nrl": "🏉",
-                            "soccer_epl": "⚽",
-                            "soccer_usa_mls": "⚽",
-                            "basketball_euroleague": "🏀",
-                            "basketball_nba": "🏀",
-                            "americanfootball_nfl": "🏈",
-                            "aussierules_afl": "🏈",
-                            "baseball_mlb": "⚾",
-                            "mma_mixed_martial_arts": "🥋",
-                            "icehockey_nhl": "🏒"]
-    
-    var body: some View {
-            List{
-                ForEach(games) { game in
-                    VStack{
-                        Spacer()
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
-                                Divider()
-                                Text(game.teams[0])
-                                    .font(.system(size: 15))
-                                Divider()
-                                Text(game.teams[1])
-                                    .font(.system(size: 15))
-                                    Spacer()
-                            }
-                            Spacer()
-                            VStack(spacing: 0){
-                            HStack(alignment: .center, spacing: 20){
-                                Text("Win")
-                                Text("Lose")
-                            }
-                            HStack{
-                                Spacer()
-                            VStack{
-                               Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Spacer()
-                            }
-                            VStack{
-                                Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Spacer()
-                            }
-                                Spacer()
-                            }
-                            .background(Rectangle().fill(Color.green))
-                            .cornerRadius(5)
-                            .padding()
-                            Spacer()
-                            }
-                            Spacer()
-                        }
-                        //End of HStack
-                        .onTapGesture{
-                            self.bottomSheetShown.toggle()
-                            gamed = game
-                        }
-                        Spacer()
-                    }       //End of VStack
-                    .padding()
-                }
-            }
-            .onAppear{
-                    OddsApi().getMMAOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
-            }
-    }
-}
-
-struct MMAView: View{
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @State private var bottomSheetShown = false
-    @State private var Odds = 0
-    @State var OddsAmount = []
-    @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    
-    var bottomSheetHeight: Int {
-        if(UIScreen.main.bounds.height == 667){
-            return 660;
-        }
-        else{
-            return 780;
-        }
-    }
-    
-    var body: some View {
-        VStack{
-//    Text("MMA Bets")
-//        .frame(maxWidth: .infinity, alignment: .leading)
-//                .offset(x: -5.0, y: 5.0)
-//                .font(.custom("NotoSans-Medium", size: 25))
-//        .padding()
-            UpcomingMMA(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-        
-        //Show all games that matches with preference
-            if (bottomSheetShown != false) {
-                GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
-                        VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
-                            let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
-                        }
-                        .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                        }
-            }
-        }
-    }
-}
+//
 
 struct UpcomingNFL: View {
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
+    @Binding var gamed : Match
     @Binding var bottomSheetShown : Bool
     @State var sportsTag = ["rugbyleague_nrl": "🏉",
                             "soccer_epl": "⚽",
@@ -997,19 +338,22 @@ struct UpcomingNFL: View {
                             "icehockey_nhl": "🏒"]
     
     var body: some View {
-            List{
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
                 ForEach(games) { game in
                     VStack{
                         Spacer()
                         HStack{
                             Spacer()
+                            
                             VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
+                                Text("Teams \(sportsTag[game.sports_key]!)")
                                 Divider()
-                                Text(game.teams[0])
+                                Text(game.away_team)
                                     .font(.system(size: 15))
                                 Divider()
-                                Text(game.teams[1])
+                                Text(game.home_team)
                                     .font(.system(size: 15))
                                     Spacer()
                             }
@@ -1023,16 +367,18 @@ struct UpcomingNFL: View {
                                 Spacer()
                             VStack{
                                Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                             VStack{
                                 Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                                 Spacer()
@@ -1051,32 +397,39 @@ struct UpcomingNFL: View {
                         }
                         Spacer()
                     }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
                     .padding()
                 }
             }
             .onAppear{
-                    OddsApi().getUSFootballOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
+//                session.getNFLGames();
+                self.games = session.NFLGames;
             }
+        }
     }
 }
 
 struct NFLView: View{
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
     @State private var bottomSheetShown = false
     @State private var Odds = 0
     @State var OddsAmount = []
     @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
     
     var bottomSheetHeight: Int {
         if(UIScreen.main.bounds.height == 667){
@@ -1089,11 +442,6 @@ struct NFLView: View{
     
     var body: some View {
         VStack{
-//            Text("NBA Bets")
-//                .frame(maxWidth: .infinity, alignment: .leading)
-//                        .offset(x: -5.0, y: 5.0)
-//                        .font(.custom("NotoSans-Medium", size: 25))
-//                .padding()
             UpcomingNFL(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
     
             //Show all games that matches with preference
@@ -1101,14 +449,18 @@ struct NFLView: View{
                 GeometryReader{ geometry in
                     BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
                             let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
                         }
                         .padding(geometry.safeAreaInsets)
                         .transition(.move(edge: .leading))
@@ -1119,151 +471,11 @@ struct NFLView: View{
         }
     }
 }
-
-struct UpcomingAFL: View {
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
-    @Binding var bottomSheetShown : Bool
-    @State var sportsTag = ["rugbyleague_nrl": "🏉",
-                            "soccer_epl": "⚽",
-                            "soccer_usa_mls": "⚽",
-                            "basketball_euroleague": "🏀",
-                            "basketball_nba": "🏀",
-                            "americanfootball_nfl": "🏈",
-                            "aussierules_afl": "🏈",
-                            "baseball_mlb": "⚾",
-                            "mma_mixed_martial_arts": "🥋",
-                            "icehockey_nhl": "🏒"]
-    
-    var body: some View {
-            List{
-                ForEach(games) { game in
-                    VStack{
-                        Spacer()
-                        HStack{
-                            Spacer()
-                            VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
-                                Divider()
-                                Text(game.teams[0])
-                                    .font(.system(size: 15))
-                                Divider()
-                                Text(game.teams[1])
-                                    .font(.system(size: 15))
-                                    Spacer()
-                            }
-                            Spacer()
-                            VStack(spacing: 0){
-                            HStack(alignment: .center, spacing: 20){
-                                Text("Win")
-                                Text("Lose")
-                            }
-                            HStack{
-                                Spacer()
-                            VStack{
-                               Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
-                                Spacer()
-                            }
-                            VStack{
-                                Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
-                                Spacer()
-                            }
-                                Spacer()
-                            }
-                            .background(Rectangle().fill(Color.green))
-                            .cornerRadius(5)
-                            .padding()
-                            Spacer()
-                            }
-                            Spacer()
-                        }
-                        //End of HStack
-                        .onTapGesture{
-                            self.bottomSheetShown.toggle()
-                            gamed = game
-                        }
-                        Spacer()
-                    }       //End of VStack
-                    .padding()
-                }
-            }
-            .onAppear{
-                    OddsApi().getAUFootballOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
-            }
-    }
-}
-
-struct AUFootballView: View{
-    @State var games: [Datum] = []
-    @EnvironmentObject var session: SessionStore
-    @State private var bottomSheetShown = false
-    @State private var Odds = 0
-    @State var OddsAmount = []
-    @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
-    
-    var bottomSheetHeight: Int {
-        if(UIScreen.main.bounds.height == 667){
-            return 660;
-        }
-        else{
-            return 780;
-        }
-    }
-    
-    var body: some View {
-        VStack{
-//            Text("Australian Football Bets")
-//                .frame(maxWidth: .infinity, alignment: .leading)
-//                        .offset(x: -5.0, y: 5.0)
-//                        .font(.custom("NotoSans-Medium", size: 25))
-//                .padding()
-            UpcomingAFL(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-            
-            //Show all games that matches with preference
-            if (bottomSheetShown != false) {
-                GeometryReader{ geometry in
-                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
-                        VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
-                            let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
-                        }
-                        .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
-                    }
-                    .edgesIgnoringSafeArea(.all)
-                }
-            }
-        }
-    }
-}
-
+//
 struct UpcomingNCAAF: View {
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
+    @Binding var gamed : Match
     @Binding var bottomSheetShown : Bool
     @State var sportsTag = ["rugbyleague_nrl": "🏉",
                             "soccer_epl": "⚽",
@@ -1277,19 +489,30 @@ struct UpcomingNCAAF: View {
                             "icehockey_nhl": "🏒"]
     
     var body: some View {
-            List{
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+        ScrollView{
                 ForEach(games) { game in
                     VStack{
-                        Spacer()
+//                        Spacer()
                         HStack{
                             Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            
                             VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
+                                Text("Teams \(sportsTag[game.sports_key]!)")
                                 Divider()
-                                Text(game.teams[0])
+                                Text(game.away_team)
                                     .font(.system(size: 15))
                                 Divider()
-                                Text(game.teams[1])
+                                Text(game.home_team)
                                     .font(.system(size: 15))
                                     Spacer()
                             }
@@ -1303,16 +526,18 @@ struct UpcomingNCAAF: View {
                                 Spacer()
                             VStack{
                                Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                             VStack{
                                 Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                                 Spacer()
@@ -1331,32 +556,39 @@ struct UpcomingNCAAF: View {
                         }
                         Spacer()
                     }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
                     .padding()
                 }
             }
             .onAppear{
-                    OddsApi().getNCAAFOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
+//                session.getNCAAFGames();
+                self.games = session.NCAAFGames;
             }
+        }
     }
 }
 
 struct NCAAFView: View{
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
     @State private var bottomSheetShown = false
     @State private var Odds = 0
     @State var OddsAmount = []
     @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
     
     var bottomSheetHeight: Int {
         if(UIScreen.main.bounds.height == 667){
@@ -1369,11 +601,6 @@ struct NCAAFView: View{
     
     var body: some View {
         VStack{
-//            Text("Australian Football Bets")
-//                .frame(maxWidth: .infinity, alignment: .leading)
-//                        .offset(x: -5.0, y: 5.0)
-//                        .font(.custom("NotoSans-Medium", size: 25))
-//                .padding()
             UpcomingNCAAF(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
             
             //Show all games that matches with preference
@@ -1381,14 +608,18 @@ struct NCAAFView: View{
                 GeometryReader{ geometry in
                     BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
                             let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
                         }
                         .padding(geometry.safeAreaInsets)
                         .transition(.move(edge: .leading))
@@ -1402,9 +633,9 @@ struct NCAAFView: View{
 
 
 struct UpcomingNHL: View {
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
-    @Binding var gamed : Datum
+    @Binding var gamed : Match
     @Binding var bottomSheetShown : Bool
     @State var sportsTag = ["rugbyleague_nrl": "🏉",
                             "soccer_epl": "⚽",
@@ -1418,19 +649,30 @@ struct UpcomingNHL: View {
                             "icehockey_nhl": "🏒"]
     
     var body: some View {
-            List{
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
                 ForEach(games) { game in
                     VStack{
-                        Spacer()
+//                        Spacer()
                         HStack{
                             Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            
                             VStack{
-                                Text("Teams \(sportsTag[game.sportKey]!)")
+                                Text("Teams \(sportsTag[game.sports_key]!)")
                                 Divider()
-                                Text(game.teams[0])
+                                Text(game.away_team)
                                     .font(.system(size: 15))
                                 Divider()
-                                Text(game.teams[1])
+                                Text(game.home_team)
                                     .font(.system(size: 15))
                                     Spacer()
                             }
@@ -1444,16 +686,18 @@ struct UpcomingNHL: View {
                                 Spacer()
                             VStack{
                                Spacer()
-                                Text("\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("-\(game.sites[0].odds.h2H[0], specifier: "%.2f")")
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                             VStack{
                                 Spacer()
-                                Text("-\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
                                 Divider()
-                                Text("\(game.sites[0].odds.h2H[1], specifier: "%.2f")")
+                                Text("\(game.away_odd, specifier: "%.2f")")
                                 Spacer()
                             }
                                 Spacer()
@@ -1472,32 +716,39 @@ struct UpcomingNHL: View {
                         }
                         Spacer()
                     }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
                     .padding()
                 }
             }
             .onAppear{
-                    OddsApi().getIceHockeyOdds{
-                        (games) in
-                        if self.games.isEmpty {
-                            self.games = games
-                        }
-                        else {
-                            self.games += games
-                        }
-
-                    }
+//                session.getNHLGames();
+                self.games = session.NHLGames;
             }
+        }
     }
 }
 
 struct NHLView: View{
-    @State var games: [Datum] = []
+    @State var games: [Match] = []
     @EnvironmentObject var session: SessionStore
     @State private var bottomSheetShown = false
     @State private var Odds = 0
     @State var OddsAmount = []
     @State private var hidesheet = false
-    @State var gamed = Datum(id: "", sportKey: "", sportNice: "", teams: [], commenceTime: 0, homeTeam: "", sites: [], sitesCount: 0)
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
     var bottomSheetHeight: Int {
         if(UIScreen.main.bounds.height == 667){
             return 660;
@@ -1508,11 +759,6 @@ struct NHLView: View{
     }
     var body: some View {
         VStack{
-//        Text("NHL Bets")
-//            .frame(maxWidth: .infinity, alignment: .leading)
-//                    .offset(x: -5.0, y: 5.0)
-//                    .font(.custom("NotoSans-Medium", size: 25))
-//            .padding()
             UpcomingNHL(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
         
             //Show all games that matches with preference
@@ -1520,14 +766,18 @@ struct NHLView: View{
                 GeometryReader{ geometry in
                     BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
                         VStack {
-                            let win1 = gamed.sites[0].odds.h2H[0]
-                            let lose1  = -gamed.sites[0].odds.h2H[0]
-                            let win2 = gamed.sites[0].odds.h2H[1]
-                            let lose2 = -gamed.sites[0].odds.h2H[1]
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
                             let OddsAmount = [win1, lose2, win2, lose1]
-                            let team_Name1 = gamed.teams[0]
-                            let team_Name2 = gamed.teams[1]
-                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown)
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
                         }
                         .padding(geometry.safeAreaInsets)
                         .transition(.move(edge: .leading))
@@ -1538,5 +788,795 @@ struct NHLView: View{
         }
     }
 }
+struct UpcomingEPL: View {
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @Binding var gamed : Match
+    @Binding var bottomSheetShown : Bool
+    @State var sportsTag = ["rugbyleague_nrl": "🏉",
+                            "soccer_epl": "⚽",
+                            "soccer_usa_mls": "⚽",
+                            "basketball_euroleague": "🏀",
+                            "basketball_nba": "🏀",
+                            "americanfootball_nfl": "🏈",
+                            "aussierules_afl": "🏈",
+                            "baseball_mlb": "⚾",
+                            "mma_mixed_martial_arts": "🥋",
+                            "icehockey_nhl": "🏒"]
+    
+    var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
+                ForEach(games) { game in
+                    VStack{
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            VStack{
+                                Text("Teams \(sportsTag[game.sports_key]!)")
+                                Divider()
+                                Text(game.away_team)
+                                    .font(.system(size: 15))
+                                Divider()
+                                Text(game.home_team)
+                                    .font(.system(size: 15))
+                                    Spacer()
+                            }
+                            Spacer()
+                            VStack(spacing: 0){
+                            HStack(alignment: .center, spacing: 20){
+                                Text("Win")
+                                Text("Lose")
+                            }
+                            HStack{
+                                Spacer()
+                            VStack{
+                               Spacer()
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                            VStack{
+                                Spacer()
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                                Spacer()
+                            }
+                            .background(Rectangle().fill(Color.green))
+                            .cornerRadius(5)
+                            .padding()
+                            Spacer()
+                            }
+                            Spacer()
+                        }
+                        //End of HStack
+                        .onTapGesture{
+                            self.bottomSheetShown.toggle()
+                            gamed = game
+                        }
+                        Spacer()
+                    }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
+                    .padding()
+                }
+            }
+            .onAppear{
+//                session.getNBAGames();
+                self.games = session.EPLGames;
+            }
+        }
+    }
+}
 
+struct EPLView: View{
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @State private var bottomSheetShown = false
+    @State private var Odds = 0
+    @State var OddsAmount = []
+    @State private var hidesheet = false
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    var body: some View {
+        VStack{
+            UpcomingEPL(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
+            
+            //Show all games that matches with preference
+            if (bottomSheetShown != false) {
+                GeometryReader{ geometry in
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
+                        VStack {
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
+                            let OddsAmount = [win1, lose2, win2, lose1]
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
+                        }
+                        .padding(geometry.safeAreaInsets)
+                        .transition(.move(edge: .leading))
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
+    }
+}
+struct UpcomingMLS: View {
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @Binding var gamed : Match
+    @Binding var bottomSheetShown : Bool
+    @State var sportsTag = ["rugbyleague_nrl": "🏉",
+                            "soccer_epl": "⚽",
+                            "soccer_usa_mls": "⚽",
+                            "basketball_euroleague": "🏀",
+                            "basketball_nba": "🏀",
+                            "americanfootball_nfl": "🏈",
+                            "aussierules_afl": "🏈",
+                            "americanfootball_ncaaf": "🏈",
+                            "baseball_mlb": "⚾",
+                            "mma_mixed_martial_arts": "🥋",
+                            "icehockey_nhl": "🏒",
+                            "soccer_uefa_champs_league": "⚽",
+                            "soccer_italy_serie_a": "⚽",
+                            "soccer_spain_la_liga": "⚽"]
+    
+    var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
+                ForEach(games) { game in
+                    VStack{
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            VStack{
+                                Text("Teams \(sportsTag[game.sports_key]!)")
+                                Divider()
+                                Text(game.away_team)
+                                    .font(.system(size: 15))
+                                Divider()
+                                Text(game.home_team)
+                                    .font(.system(size: 15))
+                                    Spacer()
+                            }
+                            Spacer()
+                            VStack(spacing: 0){
+                            HStack(alignment: .center, spacing: 20){
+                                Text("Win")
+                                Text("Lose")
+                            }
+                            HStack{
+                                Spacer()
+                            VStack{
+                               Spacer()
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                            VStack{
+                                Spacer()
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                                Spacer()
+                            }
+                            .background(Rectangle().fill(Color.green))
+                            .cornerRadius(5)
+                            .padding()
+                            Spacer()
+                            }
+                            Spacer()
+                        }
+                        //End of HStack
+                        .onTapGesture{
+                            self.bottomSheetShown.toggle()
+                            gamed = game
+                        }
+                        Spacer()
+                    }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
+                    .padding()
+                }
+            }
+            .onAppear{
+//                session.getNBAGames();
+                self.games = session.MLSGames;
+            }
+        }
+    }
+}
+
+struct MLSView: View{
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @State private var bottomSheetShown = false
+    @State private var Odds = 0
+    @State var OddsAmount = []
+    @State private var hidesheet = false
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    var body: some View {
+        VStack{
+            UpcomingMLS(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
+            
+            //Show all games that matches with preference
+            if (bottomSheetShown != false) {
+                GeometryReader{ geometry in
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
+                        VStack {
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
+                            let OddsAmount = [win1, lose2, win2, lose1]
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
+                        }
+                        .padding(geometry.safeAreaInsets)
+                        .transition(.move(edge: .leading))
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
+    }
+}
+struct UpcomingUEFA: View {
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @Binding var gamed : Match
+    @Binding var bottomSheetShown : Bool
+    @State var sportsTag = ["rugbyleague_nrl": "🏉",
+                            "soccer_epl": "⚽",
+                            "soccer_usa_mls": "⚽",
+                            "basketball_euroleague": "🏀",
+                            "basketball_nba": "🏀",
+                            "americanfootball_nfl": "🏈",
+                            "aussierules_afl": "🏈",
+                            "americanfootball_ncaaf": "🏈",
+                            "baseball_mlb": "⚾",
+                            "mma_mixed_martial_arts": "🥋",
+                            "icehockey_nhl": "🏒",
+                            "soccer_uefa_champs_league": "⚽",
+                            "soccer_italy_serie_a": "⚽",
+                            "soccer_spain_la_liga": "⚽"]
+    
+    var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
+                ForEach(games) { game in
+                    VStack{
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            VStack{
+                                Text("Teams \(sportsTag[game.sports_key]!)")
+                                Divider()
+                                Text(game.away_team)
+                                    .font(.system(size: 15))
+                                Divider()
+                                Text(game.home_team)
+                                    .font(.system(size: 15))
+                                    Spacer()
+                            }
+                            Spacer()
+                            VStack(spacing: 0){
+                            HStack(alignment: .center, spacing: 20){
+                                Text("Win")
+                                Text("Lose")
+                            }
+                            HStack{
+                                Spacer()
+                            VStack{
+                               Spacer()
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                            VStack{
+                                Spacer()
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                                Spacer()
+                            }
+                            .background(Rectangle().fill(Color.green))
+                            .cornerRadius(5)
+                            .padding()
+                            Spacer()
+                            }
+                            Spacer()
+                        }
+                        //End of HStack
+                        .onTapGesture{
+                            self.bottomSheetShown.toggle()
+                            gamed = game
+                        }
+                        Spacer()
+                    }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
+                    .padding()
+                }
+            }
+            .onAppear{
+//                session.getNBAGames();
+                self.games = session.UEFAGames;
+            }
+        }
+    }
+}
+
+struct UEFAView: View{
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @State private var bottomSheetShown = false
+    @State private var Odds = 0
+    @State var OddsAmount = []
+    @State private var hidesheet = false
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    var body: some View {
+        VStack{
+            UpcomingUEFA(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
+            
+            //Show all games that matches with preference
+            if (bottomSheetShown != false) {
+                GeometryReader{ geometry in
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
+                        VStack {
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
+                            let OddsAmount = [win1, lose2, win2, lose1]
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
+                        }
+                        .padding(geometry.safeAreaInsets)
+                        .transition(.move(edge: .leading))
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
+    }
+}
+struct UpcomingSerieA: View {
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @Binding var gamed : Match
+    @Binding var bottomSheetShown : Bool
+    @State var sportsTag = ["rugbyleague_nrl": "🏉",
+                            "soccer_epl": "⚽",
+                            "soccer_usa_mls": "⚽",
+                            "basketball_euroleague": "🏀",
+                            "basketball_nba": "🏀",
+                            "americanfootball_nfl": "🏈",
+                            "aussierules_afl": "🏈",
+                            "americanfootball_ncaaf": "🏈",
+                            "baseball_mlb": "⚾",
+                            "mma_mixed_martial_arts": "🥋",
+                            "icehockey_nhl": "🏒",
+                            "soccer_uefa_champs_league": "⚽",
+                            "soccer_italy_serie_a": "⚽",
+                            "soccer_spain_la_liga": "⚽"]
+    
+    var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
+                ForEach(games) { game in
+                    VStack{
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            VStack{
+                                Text("Teams \(sportsTag[game.sports_key]!)")
+                                Divider()
+                                Text(game.away_team)
+                                    .font(.system(size: 15))
+                                Divider()
+                                Text(game.home_team)
+                                    .font(.system(size: 15))
+                                    Spacer()
+                            }
+                            Spacer()
+                            VStack(spacing: 0){
+                            HStack(alignment: .center, spacing: 20){
+                                Text("Win")
+                                Text("Lose")
+                            }
+                            HStack{
+                                Spacer()
+                            VStack{
+                               Spacer()
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                            VStack{
+                                Spacer()
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                                Spacer()
+                            }
+                            .background(Rectangle().fill(Color.green))
+                            .cornerRadius(5)
+                            .padding()
+                            Spacer()
+                            }
+                            Spacer()
+                        }
+                        //End of HStack
+                        .onTapGesture{
+                            self.bottomSheetShown.toggle()
+                            gamed = game
+                        }
+                        Spacer()
+                    }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
+                    .padding()
+                }
+            }
+            .onAppear{
+//                session.getNBAGames();
+                self.games = session.SerieAGames;
+            }
+        }
+    }
+}
+
+struct SerieAView: View{
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @State private var bottomSheetShown = false
+    @State private var Odds = 0
+    @State var OddsAmount = []
+    @State private var hidesheet = false
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    var body: some View {
+        VStack{
+            UpcomingSerieA(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
+            
+            //Show all games that matches with preference
+            if (bottomSheetShown != false) {
+                GeometryReader{ geometry in
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
+                        VStack {
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
+                            let OddsAmount = [win1, lose2, win2, lose1]
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
+                        }
+                        .padding(geometry.safeAreaInsets)
+                        .transition(.move(edge: .leading))
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
+    }
+}
+struct UpcomingLaLiga: View {
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @Binding var gamed : Match
+    @Binding var bottomSheetShown : Bool
+    @State var sportsTag = ["rugbyleague_nrl": "🏉",
+                            "soccer_epl": "⚽",
+                            "soccer_usa_mls": "⚽",
+                            "basketball_euroleague": "🏀",
+                            "basketball_nba": "🏀",
+                            "americanfootball_nfl": "🏈",
+                            "aussierules_afl": "🏈",
+                            "americanfootball_ncaaf": "🏈",
+                            "baseball_mlb": "⚾",
+                            "mma_mixed_martial_arts": "🥋",
+                            "icehockey_nhl": "🏒",
+                            "soccer_uefa_champs_league": "⚽",
+                            "soccer_italy_serie_a": "⚽",
+                            "soccer_spain_la_liga": "⚽"]
+    
+    var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
+                ForEach(games) { game in
+                    VStack{
+//                        Spacer()
+                        HStack{
+                            Spacer()
+                            Text(game.date)
+                                .font(.system(size: 15))
+                                .foregroundColor(.primary)
+                                .underline()
+                            Spacer()
+                        }.padding()
+                        HStack{
+                            Spacer()
+                            VStack{
+                                Text("Teams \(sportsTag[game.sports_key]!)")
+                                Divider()
+                                Text(game.away_team)
+                                    .font(.system(size: 15))
+                                Divider()
+                                Text(game.home_team)
+                                    .font(.system(size: 15))
+                                    Spacer()
+                            }
+                            Spacer()
+                            VStack(spacing: 0){
+                            HStack(alignment: .center, spacing: 20){
+                                Text("Win")
+                                Text("Lose")
+                            }
+                            HStack{
+                                Spacer()
+                            VStack{
+                               Spacer()
+                                //Away
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                            VStack{
+                                Spacer()
+                                //Home
+                                Text("\(game.home_odd, specifier: "%.2f")")
+                                Divider()
+                                Text("\(game.away_odd, specifier: "%.2f")")
+                                Spacer()
+                            }
+                                Spacer()
+                            }
+                            .background(Rectangle().fill(Color.green))
+                            .cornerRadius(5)
+                            .padding()
+                            Spacer()
+                            }
+                            Spacer()
+                        }
+                        //End of HStack
+                        .onTapGesture{
+                            self.bottomSheetShown.toggle()
+                            gamed = game
+                        }
+                        Spacer()
+                    }       //End of VStack
+                    .background(
+                        RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                    )
+                    .padding()
+                }
+            }
+            .onAppear{
+//                session.getNBAGames();
+                self.games = session.LaLigaGames;
+            }
+        }
+    }
+}
+
+struct LaLigaView: View{
+    @State var games: [Match] = []
+    @EnvironmentObject var session: SessionStore
+    @State private var bottomSheetShown = false
+    @State private var Odds = 0
+    @State var OddsAmount = []
+    @State private var hidesheet = false
+    @State var gamed = Match(id: "", home_team: "", away_team: "", date: "", home_odd: 0.0, away_odd: 0.0, sports_key: "")
+    var buyingPower: Double{
+        let index = (session.profile?.score.count ?? 0 ) - 1
+        var bp = (session.profile?.score[index] ?? 0)
+        var aggregate: Double = 0
+        session.onGoingBets.forEach{
+            bet in
+            aggregate += Double(bet.value) ?? 0
+        }
+        bp = bp - aggregate
+        return bp
+    }
+    var bottomSheetHeight: Int {
+        if(UIScreen.main.bounds.height == 667){
+            return 660;
+        }
+        else{
+            return 780;
+        }
+    }
+    var body: some View {
+        VStack{
+            UpcomingLaLiga(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
+            
+            //Show all games that matches with preference
+            if (bottomSheetShown != false) {
+                GeometryReader{ geometry in
+                    BottomSheetView(isOpen: self.$bottomSheetShown, maxHeight: CGFloat(bottomSheetHeight))  {
+                        VStack {
+                            let commenceTime = gamed.date
+                            let id = UUID().uuidString
+                            let win1 = gamed.away_odd
+                            let lose1  = gamed.away_odd
+                            let win2 = gamed.home_odd
+                            let lose2 = gamed.home_odd
+                            let OddsAmount = [win1, lose2, win2, lose1]
+                            let team_Name1 = gamed.away_team
+                            let team_Name2 = gamed.home_team
+                            let home_team = gamed.home_team
+                            let gameID = gamed.id
+                            BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
+                        }
+                        .padding(geometry.safeAreaInsets)
+                        .transition(.move(edge: .leading))
+                    }
+                    .edgesIgnoringSafeArea(.all)
+                }
+            }
+        }
+    }
+}
 //#endif

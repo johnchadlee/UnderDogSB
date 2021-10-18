@@ -25,6 +25,16 @@ class SessionStore: ObservableObject {
     @Published var lostBets: [OrderDetails] = []
     @Published var gameResults: [GameResult] = []
     @Published var GameMatch: [Match] = []
+    @Published var NFLGames: [Match] = []
+    @Published var NBAGames: [Match] = []
+    @Published var NCAAFGames: [Match] = []
+    @Published var NHLGames: [Match] = []
+    @Published var MLBGames: [Match] = []
+    @Published var MLSGames: [Match] = []
+    @Published var EPLGames: [Match] = []
+    @Published var SerieAGames: [Match] = []
+    @Published var UEFAGames: [Match] = []
+    @Published var LaLigaGames: [Match] = []
     private var upcomingGameRepo = GameOddsRepo()
     private var profileRepository = UserProfileRepository()
     private var orderRespository = OrderRepository()
@@ -48,7 +58,7 @@ class SessionStore: ObservableObject {
                     return
                   }
                   self.pref = pref
-//                    print(self.pref)
+                    //Add Upcoming Games based on pref
                     if(self.pref?.MLB == true){
                         self.upcomingGameRepo.MLBUpComingGames() {
                             (gameMatch ,error) in
@@ -56,9 +66,7 @@ class SessionStore: ObservableObject {
                                 print("\(error)")
                                 return
                             }
-//                            print(gameMatch)
                             self.GameMatch += gameMatch
-        //                    print(self.GameMatch)
                         }
                     }
                     if(self.pref?.NBA == true){
@@ -68,9 +76,7 @@ class SessionStore: ObservableObject {
                                 print("\(error)")
                                 return
                             }
-        //                    print(gameMatch)
                             self.GameMatch += gameMatch
-        //                    print(self.GameMatch)
                         }
                     }
                     if(self.pref?.NFL == true){
@@ -80,9 +86,7 @@ class SessionStore: ObservableObject {
                                 print("\(error)")
                                 return
                             }
-                            print(gameMatch)
                             self.GameMatch += gameMatch
-        //                    print(self.GameMatch)
                         }
                     }
                     if(self.pref?.NHL == true){
@@ -92,9 +96,7 @@ class SessionStore: ObservableObject {
                                 print("\(error)")
                                 return
                             }
-        //                    print(gameMatch)
                             self.GameMatch += gameMatch
-        //                    print(self.GameMatch)
                         }
                     }
                     if(self.pref?.NCAAF == true){
@@ -104,9 +106,108 @@ class SessionStore: ObservableObject {
                                 print("\(error)")
                                 return
                             }
-//                            print(gameMatch)
                             self.GameMatch += gameMatch
-        //                    print(self.GameMatch)
+                        }
+                    }
+                    if(self.pref?.MLS == true){
+                        self.upcomingGameRepo.MLSUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+                            self.GameMatch += gameMatch
+                        }
+                    }
+                    if(self.pref?.UEFA == true){
+                        self.upcomingGameRepo.UEFAUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+                            self.GameMatch += gameMatch
+                        }
+                    }
+                    if(self.pref?.LALIGA == true){
+                        self.upcomingGameRepo.LaLigaUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+                            self.GameMatch += gameMatch
+                        }
+                    }
+                    if(self.pref?.SERIEA == true){
+                        self.upcomingGameRepo.SerieAUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+                            self.GameMatch += gameMatch
+                        }
+                    }
+                    if(self.pref?.EPL == true){
+                        self.upcomingGameRepo.EPLUpComingGames() {
+                            (gameMatch ,error) in
+                            if let error = error{
+                                print("\(error)")
+                                return
+                            }
+                            self.GameMatch += gameMatch
+                        }
+                    }
+                    //Delete upcoming game based on pref
+                    if(self.pref?.MLB == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "baseball_mlb"
+                        }
+                    }
+                    if(self.pref?.NCAAF == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "americanfootball_ncaaf"
+                        }
+                    }
+                    if(self.pref?.NHL == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "icehockey_nhl"
+                        }
+                    }
+                    if(self.pref?.NFL == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "americanfootball_nfl"
+                        }
+                    }
+                    if(self.pref?.NBA == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "basketball_nba"
+                        }
+                    }
+                    if(self.pref?.EPL == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "soccer_epl"
+                        }
+                    }
+                    if(self.pref?.UEFA == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "soccer_uefa_champs_league"
+                        }
+                    }
+                    if(self.pref?.LALIGA == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "soccer_spain_la_liga"
+                        }
+                    }
+                    if(self.pref?.SERIEA == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "soccer_italy_serie_a"
+                        }
+                    }
+                    if(self.pref?.MLS == false && self.GameMatch.count != 0){
+                        self.GameMatch.removeAll{
+                            $0.sports_key == "soccer_usa_mls"
                         }
                     }
                 }
@@ -117,16 +218,47 @@ class SessionStore: ObservableObject {
                   }
                   self.onGoingBets = onGoingBets!
                   //Testing for immediate payout
-//                  self.PayOutFunction(userId: user.uid)
+                  self.PayOutFunction(userId: user.uid)
                 }
                 //Get games that are completed
-                self.resultRespository.findFinishedGames() { (gameResults , error) in
+                self.resultRespository.findFinishedNFLGames() { (gameResults , error) in
                     if let error = error {
                         print("Error finding finished games: \(error)")
                         return
                     }
-                    self.gameResults = gameResults
-//                    print(self.mlbgameResults)
+                    self.gameResults += gameResults
+//                    self.PayOutFunction(userId: user.uid)
+                }
+                self.resultRespository.findFinishedMLBGames() { (gameResults , error) in
+                    if let error = error {
+                        print("Error finding finished games: \(error)")
+                        return
+                    }
+                    self.gameResults += gameResults
+//                    self.PayOutFunction(userId: user.uid)
+                }
+                self.resultRespository.findFinishedNBAGames() { (gameResults , error) in
+                    if let error = error {
+                        print("Error finding finished games: \(error)")
+                        return
+                    }
+                    self.gameResults += gameResults
+//                    self.PayOutFunction(userId: user.uid)
+                }
+                self.resultRespository.findFinishedNCAAFGames() { (gameResults , error) in
+                    if let error = error {
+                        print("Error finding finished games: \(error)")
+                        return
+                    }
+                    self.gameResults += gameResults
+//                    self.PayOutFunction(userId: user.uid)
+                }
+                self.resultRespository.findFinishedNHLGames() { (gameResults , error) in
+                    if let error = error {
+                        print("Error finding finished games: \(error)")
+                        return
+                    }
+                    self.gameResults += gameResults
 //                    self.PayOutFunction(userId: user.uid)
                 }
                 //Payout base on OngoingBets and Results
@@ -157,6 +289,107 @@ class SessionStore: ObservableObject {
                 self.session = nil
             }
         })
+    }
+    
+    func getNFLGames(){
+        self.upcomingGameRepo.NFLUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.NFLGames = gameMatch;
+        }
+    }
+    func getMLBGames(){
+        self.upcomingGameRepo.MLBUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.MLBGames = gameMatch;
+        }
+    }
+    func getNCAAFGames(){
+        self.upcomingGameRepo.NCAAFUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.NCAAFGames = gameMatch;
+        }
+    }
+    func getNHLGames(){
+        self.upcomingGameRepo.NHLUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.NHLGames = gameMatch;
+        }
+    }
+    func getNBAGames(){
+        self.upcomingGameRepo.NBAUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.NBAGames = gameMatch;
+        }
+    }
+    func getEPLGames(){
+        self.upcomingGameRepo.EPLUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.EPLGames = gameMatch;
+        }
+    }
+    func getSerieAGames(){
+        self.upcomingGameRepo.SerieAUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.SerieAGames = gameMatch;
+        }
+    }
+    func getMLSGames(){
+        self.upcomingGameRepo.MLSUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.MLSGames = gameMatch;
+        }
+    }
+    func getUEFAGames(){
+        self.upcomingGameRepo.UEFAUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.UEFAGames = gameMatch;
+        }
+    }
+    func getLaLigaGames(){
+        self.upcomingGameRepo.LaLigaUpComingGames() {
+            (gameMatch ,error) in
+            if let error = error{
+                print("\(error)")
+                return
+            }
+            self.LaLigaGames = gameMatch;
+        }
     }
     func PayOutFunction(userId: String) {
 //        print(onGoingBets)
@@ -217,7 +450,7 @@ class SessionStore: ObservableObject {
             }
         }
     }
-    func signUp(email: String, password: String, displayName: String ,State: String, age: Int, score: [Double], NFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, completion: @escaping (_ profile: UserProfile?,_ pref: preference? ,_ error: Error?) -> Void) {
+    func signUp(email: String, password: String, displayName: String ,State: String, age: Int, score: [Double], NFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, EPL: Bool, MLS: Bool, SERIEA: Bool, LALIGA: Bool, UEFA: Bool, completion: @escaping (_ profile: UserProfile?,_ pref: preference? ,_ error: Error?) -> Void) {
       Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
         if let error = error {
           print("Error signing up: \(error)")
@@ -228,7 +461,7 @@ class SessionStore: ObservableObject {
         print("User \(user.uid) signed up.")
 
         let userProfile = UserProfile(uid: user.uid, displayName: displayName, State: State, age: age, email: email, score: score)
-        let pref = preference(NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF)
+        let pref = preference(NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF, EPL: EPL, MLS: MLS, UEFA: UEFA, SERIEA: SERIEA, LALIGA: LALIGA)
         self.profileRepository.createProfile(profile: userProfile, preference: pref) { (profile, preference, error) in
           if let error = error {
             print("Error while creating the user profile: \(error)")
@@ -298,11 +531,11 @@ class SessionStore: ObservableObject {
             } )
         }
     
-    func confirmUpdatedPref(NFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool,completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
+    func confirmUpdatedPref(NFL: Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, EPL: Bool, MLS: Bool, SERIEA: Bool, LALIGA: Bool, UEFA: Bool,completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
         let user = Auth.auth().currentUser
         if let user = user {
             let uid = user.uid
-            self.profileRepository.updatePref(userId: uid, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF){ (pref, error) in
+            self.profileRepository.updatePref(userId: uid, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF, EPL: EPL, MLS: MLS, SERIEA: UEFA, LALIGA: LALIGA, UEFA: SERIEA){ (pref, error) in
                 if let error = error {
                     print("Error whil confirm updating user preference: \(error)")
                     completion(nil, nil)

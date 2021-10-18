@@ -18,9 +18,9 @@ struct betsLost: View {
     @State var betsLost: [OrderDetails] = []
     // create order array
     var body: some View {
-        VStack(alignment: .leading){
+        VStack(spacing: 15){
             ForEach(betsLost) { ongoing in
-                
+                VStack(alignment: .leading){
                 Text("\(ongoing.team_Name1)  vs  \(ongoing.team_Name2)")
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     .font(.system(size: 12))
@@ -37,7 +37,10 @@ struct betsLost: View {
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     .font(.system(size: 12))
                     .foregroundColor(.red)
-                Divider()
+//                Divider()
+                }.padding()
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+//                .padding()
             }
         }
         .onAppear(){

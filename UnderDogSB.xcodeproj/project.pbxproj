@@ -20,6 +20,7 @@
 		EB47B4B626DD907300843038 /* UnderDogSBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B4B526DD907300843038 /* UnderDogSBTests.swift */; };
 		EB47B4C126DD907300843038 /* UnderDogSBUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB47B4C026DD907300843038 /* UnderDogSBUITests.swift */; };
 		EB47B4D226DD914100843038 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB47B4D126DD914100843038 /* GoogleService-Info.plist */; };
+		EB6026AA2707D5FE00D3094C /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = EB6026A92707D5FE00D3094C /* Neumorphic */; };
 		EBB0FACD26DDAA4A0026679E /* BettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FACC26DDAA4A0026679E /* BettingView.swift */; };
 		EBB0FAEA26DDAA560026679E /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAE926DDAA560026679E /* AuthView.swift */; };
 		EBB0FAEF26DDAA5F0026679E /* profileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB0FAEE26DDAA5E0026679E /* profileItem.swift */; };
@@ -74,7 +75,7 @@
 		DD3B70D6EDDBB3869DD6A44C /* Pods-UnderDogSBTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnderDogSBTests.release.xcconfig"; path = "Target Support Files/Pods-UnderDogSBTests/Pods-UnderDogSBTests.release.xcconfig"; sourceTree = "<group>"; };
 		EB20AF2F270446C100CF5FDB /* iLineChart */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iLineChart; path = ../iLineChart; sourceTree = "<group>"; };
 		EB20AF332704477000CF5FDB /* iLineChart */ = {isa = PBXFileReference; lastKnownFileType = folder; name = iLineChart; path = ../iLineChart; sourceTree = "<group>"; };
-		EB47B49B26DD906B00843038 /* UnderDogSB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnderDogSB.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB47B49B26DD906B00843038 /* RalliSports.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RalliSports.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB47B49E26DD906B00843038 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB47B4A026DD906B00843038 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		EB47B4A226DD906B00843038 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -122,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB6026AA2707D5FE00D3094C /* Neumorphic in Frameworks */,
 				2029A51439825C6F76CFFCC3 /* Pods_UnderDogSB.framework in Frameworks */,
 				EB20AF962704593000CF5FDB /* iLineChart in Frameworks */,
 				EBD7865D26EF1B360046CD6E /* iColor in Frameworks */,
@@ -176,7 +178,7 @@
 		EB47B49C26DD906B00843038 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EB47B49B26DD906B00843038 /* UnderDogSB.app */,
+				EB47B49B26DD906B00843038 /* RalliSports.app */,
 				EB47B4B126DD907300843038 /* UnderDogSBTests.xctest */,
 				EB47B4BC26DD907300843038 /* UnderDogSBUITests.xctest */,
 			);
@@ -297,9 +299,10 @@
 			packageProductDependencies = (
 				EBD7865C26EF1B360046CD6E /* iColor */,
 				EB20AF952704593000CF5FDB /* iLineChart */,
+				EB6026A92707D5FE00D3094C /* Neumorphic */,
 			);
 			productName = UnderDogSB;
-			productReference = EB47B49B26DD906B00843038 /* UnderDogSB.app */;
+			productReference = EB47B49B26DD906B00843038 /* RalliSports.app */;
 			productType = "com.apple.product-type.application";
 		};
 		EB47B4B026DD907300843038 /* UnderDogSBTests */ = {
@@ -374,6 +377,7 @@
 			mainGroup = EB47B49226DD906B00843038;
 			packageReferences = (
 				EB20AF942704593000CF5FDB /* XCRemoteSwiftPackageReference "iLineChart" */,
+				EB6026A82707D5FE00D3094C /* XCRemoteSwiftPackageReference "neumorphic" */,
 			);
 			productRefGroup = EB47B49C26DD906B00843038 /* Products */;
 			projectDirPath = "";
@@ -632,7 +636,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				EXCLUDED_ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -695,7 +698,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				EXCLUDED_ARCHS = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -730,9 +732,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = gwadrednu.UnderDogSB;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RalliSports;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -753,10 +755,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.9;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = gwadrednu.UnderDogSB;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RalliSports;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -900,6 +902,14 @@
 				minimumVersion = 1.6.4;
 			};
 		};
+		EB6026A82707D5FE00D3094C /* XCRemoteSwiftPackageReference "neumorphic" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/costachung/neumorphic/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -907,6 +917,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EB20AF942704593000CF5FDB /* XCRemoteSwiftPackageReference "iLineChart" */;
 			productName = iLineChart;
+		};
+		EB6026A92707D5FE00D3094C /* Neumorphic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB6026A82707D5FE00D3094C /* XCRemoteSwiftPackageReference "neumorphic" */;
+			productName = Neumorphic;
 		};
 		EBD7865C26EF1B360046CD6E /* iColor */ = {
 			isa = XCSwiftPackageProductDependency;

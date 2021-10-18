@@ -72,7 +72,12 @@ struct signUpView : View {
     @EnvironmentObject var session: SessionStore
 
     var body: some View{
-            Image("DLogo")
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            VStack{
+            Image("newLogo")
+                .resizable()
+                .frame(width: 120, height: 120)
                 .padding()
                 .onTapGesture {
                     withAnimation {
@@ -80,23 +85,26 @@ struct signUpView : View {
                     }
                 }
                 .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
+            Text("may the odds be ever in your favor...")
+                .foregroundColor(.secondary)
+                .italic()
             VStack{
-                VStack(alignment: .leading, spacing: 18){
+                VStack(alignment: .leading, spacing: 5){
                     TextField("Username", text: $displayName)
                         .keyboardType(.default)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .padding()
-                        .background(Color("lightgrey"))
-                        .cornerRadius(5.0)
+                        .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                        .cornerRadius(5.0)
                         .padding()
                     TextField("Email Address", text: $email)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .padding()
-                        .background(Color("lightgrey"))
-                        .cornerRadius(5.0)
+                        .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                        .cornerRadius(5.0)
                         .padding()
                     Picker(selection: $state, label: Text("State: \(state)")){
                             ForEach(states, id: \.self){
@@ -104,8 +112,8 @@ struct signUpView : View {
                                 Text(state).tag(state)
                     }}.pickerStyle(MenuPickerStyle())
                       .padding()
-                      .background(Color("lightgrey"))
-                      .cornerRadius(5.0)
+                      .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                      .cornerRadius(5.0)
                       .padding()
                 }
             }.padding()
@@ -119,6 +127,7 @@ struct signUpView : View {
                 Spacer()
             }
             NavigationLink(destination: ageVerifyView(email: email, displayName: displayName, state: state) ) {Text( "Next")}
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
                 .disabled(email.isEmpty || displayName.isEmpty)
                 .buttonStyle(largeButton() )
                 .padding()
@@ -131,8 +140,9 @@ struct signUpView : View {
             if(UIScreen.main.bounds.height == 667){
                 Spacer()
             }
+            }
     }
-
+    }
 }
 
 struct ageVerifyView: View {
@@ -156,6 +166,9 @@ struct ageVerifyView: View {
     @State private var birthDate = Date()
     
     var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            VStack{
         VStack(alignment: .center, spacing: 20){
             Text("Enter Your Birthday")
                 .font(.custom("NotoSans-Medium", size: 22))
@@ -189,7 +202,8 @@ struct ageVerifyView: View {
         if(underage == false){
             NavigationLink(destination: preferenceView(email: email, displayName: displayName, state: state, age: age)) {
                                     Text("Next")
-            }.buttonStyle(largeButton() )
+            }.background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+            .buttonStyle(largeButton() )
              .padding()
         }
 //         .alert(isPresented: $showAlert) {
@@ -198,6 +212,8 @@ struct ageVerifyView: View {
         if(UIScreen.main.bounds.height == 667){
             Spacer()
         }
+            }
+    }
     }
 }
 
@@ -215,8 +231,11 @@ struct preferenceView: View{
 //    @State var Euroleague: Bool = false
 //    @State var MMA: Bool = false
 //    @State var NRL: Bool = false
-//    @State var EPL: Bool = false
-//    @State var MLS: Bool = false
+    @State var EPL: Bool = false
+    @State var MLS: Bool = false
+    @State var SERIEA: Bool = false
+    @State var LALIGA: Bool = false
+    @State var UEFA: Bool = false
     
     let columns = [
         GridItem(.adaptive(minimum: 100))
@@ -224,7 +243,8 @@ struct preferenceView: View{
     
     
     var body: some View {
-        
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
         VStack(alignment: .center, spacing: 10){
             Text("Preference")
                 .font(.custom("NotoSans-Medium", size: 22))
@@ -234,6 +254,7 @@ struct preferenceView: View{
                 .font(.custom("NotoSans-Medium", size: 15))
                 .foregroundColor(Color.gray)
                 .padding()
+            VStack{
             Menu{
                 Menu{
                     Toggle(isOn: $NFL, label: {
@@ -246,13 +267,25 @@ struct preferenceView: View{
                 }label: {
                     Text("Football 🏈")
                 }
-//                Menu{
-//                    Button("EPL 🇬🇧") {
-//                        EPL = true
-//                    }
-//                }label: {
-//                    Text("Soccer ⚽")
-//                }
+                Menu{
+                    Button("EPL 🇬🇧") {
+                        EPL = true
+                    }
+                    Button("MLS 🇺🇸") {
+                        MLS = true
+                    }
+                    Button("Serie A 🇮🇹") {
+                        SERIEA = true
+                    }
+                    Button("La Liga 🇪🇸") {
+                        LALIGA = true
+                    }
+                    Button("UEFA 🇪🇺") {
+                        UEFA = true
+                    }
+                }label: {
+                    Text("Soccer ⚽")
+                }
                 Menu{
                     Button("NBA 🇺🇸") {
                         NBA = true
@@ -292,11 +325,14 @@ struct preferenceView: View{
 //                    Text("Rugby 🏉")
 //               }
 
-            }label: {
-                Label("Sports", systemImage: "sportscourt")
-                    .accentColor(.blue)
-                    .font(.system(size: 22, weight: .semibold))
-           }
+                }label: {
+                    Label("Sports", systemImage: "sportscourt")
+                        .accentColor(.blue)
+                        .font(.system(size: 22, weight: .semibold))
+               }
+            }
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
             Spacer()
             ScrollView{
                 LazyVGrid(columns: columns){
@@ -340,29 +376,47 @@ struct preferenceView: View{
 //                    })
 //                    .padding()
 //                    .toggleStyle(CheckboxStyle())
-//                    Toggle(isOn: $EPL, label: {
-//                        Text("EPL 🇬🇧")
-//                    })
-//                    .padding()
-//                    .toggleStyle(CheckboxStyle())
-//                    Toggle(isOn: $MLS, label: {
-//                        Text("MLS 🇺🇸")
-//                    })
-//                    .padding()
-//                    .toggleStyle(CheckboxStyle())
+                    Toggle(isOn: $EPL, label: {
+                        Text("EPL 🇬🇧")
+                    })
+                    .padding()
+                    .toggleStyle(CheckboxStyle())
+                    Toggle(isOn: $MLS, label: {
+                        Text("MLS 🇺🇸")
+                    })
+                    .padding()
+                    .toggleStyle(CheckboxStyle())
+                    Toggle(isOn: $UEFA, label: {
+                        Text("UEFA 🇪🇺")
+                    })
+                    .padding()
+                    .toggleStyle(CheckboxStyle())
+                    Toggle(isOn: $LALIGA, label: {
+                        Text("La Liga 🇪🇸")
+                    })
+                    .padding()
+                    .toggleStyle(CheckboxStyle())
+                    Toggle(isOn: $SERIEA, label: {
+                        Text("Serie A 🇮🇹")
+                    })
+                    .padding()
+                    .toggleStyle(CheckboxStyle())
+
                 }
                 Spacer()
                 Spacer()
             }
-            NavigationLink(destination: confirmPasswordView(email: email, displayName: displayName, state: state, age: age, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF)) {
+            NavigationLink(destination: confirmPasswordView(email: email, displayName: displayName, state: state, age: age, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF, EPL: EPL, MLS: MLS, SERIEA: SERIEA, LALIGA: LALIGA, UEFA: UEFA)) {
                                     Text("Next")
             }
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
             .buttonStyle(largeButton())
             .padding()
             if(UIScreen.main.bounds.height == 667){
                 Spacer()
             }
         }
+    }
     }
 }
 
@@ -395,7 +449,7 @@ struct confirmPasswordView: View {
     @State var state: String = ""
     @State var age: Int = 0
     @State var error: String = ""
-    @State var score: [Double] = [20] //Free money
+    @State var score: [Double] = [1000] //Free money
     @State var NFL: Bool = false
 //    @State var AFL: Bool = false
     @State var MLB: Bool = false
@@ -405,15 +459,19 @@ struct confirmPasswordView: View {
 //    @State var Euroleague: Bool = false
 //    @State var MMA: Bool = false
 //    @State var NRL: Bool = false
-//    @State var EPL: Bool = false
-//    @State var MLS: Bool = false
+    @State var EPL: Bool = false
+    @State var MLS: Bool = false
+    @State var SERIEA: Bool = false
+    @State var LALIGA: Bool = false
+    @State var UEFA: Bool = false
+    
     
     @State var profile: UserProfile?
     @State var preference: preference?
     @EnvironmentObject var session: SessionStore
     
     func signUp() {
-        session.signUp(email: email, password: password, displayName: displayName, State: state, age: age, score: score, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF) { (profile, preference, error) in
+        session.signUp(email: email, password: password, displayName: displayName, State: state, age: age, score: score, NFL: NFL, MLB: MLB, NBA: NBA, NHL: NHL, NCAAF: NCAAF, EPL: EPL, MLS: MLS, SERIEA: SERIEA, LALIGA: LALIGA, UEFA: UEFA) { (profile, preference, error) in
             if let error = error {
                 self.error = error.localizedDescription
             } else {
@@ -428,6 +486,9 @@ struct confirmPasswordView: View {
     // look into inserting optional tutorial here
     var body: some View {
         
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            VStack{
         Text("If you need a tutorial in sports betting, you can check out our tutorial in the account settings") .foregroundColor(.primary)
             .frame(width: 350, height: 100, alignment: .center)
             .font(.custom("NotoSans-Medium", size: 20))
@@ -441,16 +502,16 @@ struct confirmPasswordView: View {
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .padding()
-                    .background(Color("lightgrey"))
-                    .cornerRadius(5.0)
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                    .cornerRadius(5.0)
                     .padding()
                 SecureField("Re-enter Password", text: $rpassword)
                     .keyboardType(.default)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .padding()
-                    .background(Color("lightgrey"))
-                    .cornerRadius(5.0)
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                    .cornerRadius(5.0)
                     .padding()
             }
         }.padding()
@@ -477,6 +538,8 @@ struct confirmPasswordView: View {
         if(UIScreen.main.bounds.height == 667){
             Spacer()
         }
+            }
+    }
     }
 }
 
@@ -504,32 +567,42 @@ struct loginView : View {
         }
     }
     var body: some View{
-
-        Image("DLogo")
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            VStack{
+        Image("newLogo")
+            .resizable()
+            .frame(width: 120, height: 120)
             .onTapGesture {
                 withAnimation {
                     self.degrees += 360
                 }
             }
             .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
-        VStack(alignment: .leading, spacing:18){
+            .padding()
+        VStack(alignment: .leading, spacing:5){
             TextField("Email Address", text: $email)
                 .autocapitalization(.none)
                 .padding()
-                .background(Color("lightgrey"))
-                .cornerRadius(5.0)
+//                .background(Color("lightgrey"))
+                .background(
+                    RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                .cornerRadius(5.0)
                 .padding()
             SecureField("Password", text: $password)
                 .padding()
-                .background(Color("lightgrey"))
-                .cornerRadius(5.0)
+                .background(
+                    RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                .cornerRadius(5.0)
                 .padding()
             NavigationLink(
                 destination: resetPasswordView(),
                 label: {
                     Text("Forget password?").foregroundColor(.blue)
                 })
-                .padding(.horizontal)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                .padding()
                 
         }
         .gesture(
@@ -549,6 +622,7 @@ struct loginView : View {
         }
         Spacer()
         Button(action: login) { Text("Login") }
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
             .buttonStyle(largeButton())
             .padding(.horizontal, 30)
         
@@ -561,6 +635,8 @@ struct loginView : View {
         if(UIScreen.main.bounds.height == 667){
             Spacer()
         }
+            }
+    }
     }
 }
 
@@ -568,29 +644,30 @@ struct LaunchView: View {
     @State var shortString = true
     @State var degrees = 0.0
     var body: some View {
-        VStack(alignment: .center, spacing: 35){
-            Image("UnderDogSportsBookOfficial")
-                .onTapGesture {
-                    withAnimation {
-                        self.degrees += 360
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
+            VStack(alignment: .center, spacing: 25){
+                Image("newBannerLogo")
+                    .resizable()
+                    .frame(width: 300.0, height: 150.0)
+                    .onTapGesture {
+                        withAnimation {
+                            self.degrees += 360
+                        }
                     }
-                }
-                .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
-            // .position(x: 0, y: 50.0)
-//            Text("Creating the under dog story one bet at a time")
-//                .foregroundColor(.gray)
-//                .frame(width: 200, height: 100, alignment: .center)
-//                .font(.custom("NotoSans-Medium", size: 15))
-//                .multilineTextAlignment(.center)
-            TextAnimation()
-            Spacer()
-            NavigationLink(destination: signUpView(), label: {Text( "Sign Up")} )
-            NavigationLink(destination: loginView(), label: {Text( "Login")} )
-        }
-            .buttonStyle(largeButton() )
-            .padding()
-        if(UIScreen.main.bounds.height == 667){
-            Spacer()
+                    .rotation3DEffect(.degrees(degrees), axis: (x: 1, y: 0, z: 0))
+                TextAnimation()
+                Spacer()
+                NavigationLink(destination: signUpView(), label: {Text( "Sign Up")} )
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                NavigationLink(destination: loginView(), label: {Text( "Login")} )
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+            }
+                .buttonStyle(largeButton())
+                .padding()
+            if(UIScreen.main.bounds.height == 667){
+                Spacer()
+            }
         }
     }
 }
@@ -603,13 +680,13 @@ public struct TextAnimation: View {
       VStack{
         Text(text)
             .animation(.spring())
-            .foregroundColor(.gray)
+            .foregroundColor(.neonOceanBlue)
             .frame(width: 200, height: 100, alignment: .center)
             .font(.system(size: 20))
 //            .multilineTextAlignment(.center)
       }.onAppear() {
           text = ""
-          "Creating the underdog story one bet at a time.".enumerated().forEach { index, character in
+          "Starting the Ralli one bet at a time.".enumerated().forEach { index, character in
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.1) {
               text += String(character)
             }
@@ -628,6 +705,8 @@ struct resetPasswordView : View {
         emailSent = true
     }
     var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
         if emailSent != false {
             VStack {
                 Text("Check Your Email! If you haven't recieved a message from us, click the reset button again.")
@@ -641,13 +720,18 @@ struct resetPasswordView : View {
             TextField("Email Address", text: $email)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .padding(.horizontal)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                .cornerRadius(5.0)
                 .padding()
             Button(action: resetPassword, label: {
                 Text("Reset")
                     .padding()
             })
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
             .buttonStyle(largeButton())
+            Spacer()
+        }
         }
     }
 }
@@ -674,7 +758,9 @@ struct UpdatePasswordView: View {
                     
                 }}}
         var body: some View{
-            VStack(spacing: 30){
+            ZStack{
+                Color.Neumorphic.main.ignoresSafeArea()
+            VStack(spacing: 15){
             Text("Update Password")
                 .font(.system(size: 30, weight: .bold, design: .rounded))
                 .padding()
@@ -683,34 +769,36 @@ struct UpdatePasswordView: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .padding()
-                .background(Color("lightgrey"))
-                .cornerRadius(5.0)
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                .cornerRadius(5.0)
                 .padding()
             TextField("Current Password", text: $currentPassword)
                 .keyboardType(.default)
                 .autocapitalization(.none)
                 .padding()
-                .background(Color("lightgrey"))
-                .cornerRadius(5.0)
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                .cornerRadius(5.0)
                 .padding()
             SecureField("New Password", text: $newPassword)
                 .keyboardType(.default)
                 .autocapitalization(.none)
                 .padding()
-                .background(Color("lightgrey"))
-                .cornerRadius(5.0)
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20)))
+//                .cornerRadius(5.0)
                 .padding()
             NavigationLink(
                     destination: resetPasswordView(),
                     label: {
                         Text("Forget password?")
                     })
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
                     .padding(.horizontal)
                 Button("Change Password"){if(error != ""){ showingAlert = true;}
                 else {
                     changePassword();
                     showSuccess = true;
-                }}
+                }}.softButtonStyle(Capsule(), pressedEffect: .flat)
                     .padding()
                       //  Text("Incorrect Email/Password")
                         //    .font(.system(size: 14, weight: .semibold))
@@ -734,6 +822,7 @@ struct UpdatePasswordView: View {
             .alert(isPresented: $showSuccess) {
                 Alert(title: Text("Password Updated!"), message: Text("Please return to the app"), dismissButton: .default(Text("Dismiss").foregroundColor(.black)))
             }
+            }
         }
 }
 
@@ -748,16 +837,21 @@ struct AuthView: View {
 struct largeButton: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
     configuration.label
+//            .overlay(
+//                RoundedRectangle(cornerRadius: 20).fill(Color("Button Color")).softInnerShadow(RoundedRectangle(cornerRadius: 20))
+//            )
         .foregroundColor(Color.white)
         .frame(maxWidth: 350, minHeight: 44)
         .cornerRadius(6)
         .background(Color("Button Color"))
-        .overlay(RoundedRectangle(cornerRadius: 6)
+        .clipShape(Capsule())
+        .overlay(Capsule()
                 .stroke(Color("Button Color"), lineWidth: 1))
-                .scaleEffect(configuration.isPressed ? 1.2 : 1)
-                .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+//                .scaleEffect(configuration.isPressed ? 1.1 : 1)
+//                .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
         .font(.custom("NotoSans-Medium", size: 18))
         .opacity(configuration.isPressed ? 0.7 : 1)
+        //RoundedRectangle(cornerRadius: 6)
     }
 }
 //#endif

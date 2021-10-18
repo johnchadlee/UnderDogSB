@@ -29,7 +29,7 @@ class GameOddsRepo: ObservableObject {
         
             db.collection("mlb_odds").addSnapshotListener { querySnapshot, error in
                 guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
+                    print("Error fetching: \(error)")
                     return
                 }
                 for document in querySnapshot!.documents {
@@ -47,7 +47,7 @@ class GameOddsRepo: ObservableObject {
         
             db.collection("nba_odds").addSnapshotListener { querySnapshot, error in
                 guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
+                    print("Error fetching: \(error)")
                     return
                 }
                 for document in querySnapshot!.documents {
@@ -65,7 +65,7 @@ class GameOddsRepo: ObservableObject {
         
             db.collection("nfl_odds").addSnapshotListener { querySnapshot, error in
                 guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
+                    print("Error fetching: \(error)")
                     return
                 }
                 for document in querySnapshot!.documents {
@@ -83,7 +83,7 @@ class GameOddsRepo: ObservableObject {
         
             db.collection("nhl_odds").addSnapshotListener { querySnapshot, error in
                 guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
+                    print("Error fetching: \(error)")
                     return
                 }
                 for document in querySnapshot!.documents {
@@ -101,7 +101,97 @@ class GameOddsRepo: ObservableObject {
         
             db.collection("ncaaf_odds").addSnapshotListener { querySnapshot, error in
                 guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
+                    print("Error fetching: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func MLSUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("mls_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func UEFAUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("UEFA_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func LaLigaUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("LaLiga_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func SerieAUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("SerieA_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching: \(error)")
+                    return
+                }
+                for document in querySnapshot!.documents {
+                    let specificMatch = try? document.data(as: Match.self)
+                    if specificMatch != nil {
+                        upcoming.append(specificMatch!)
+                    }
+                }
+//                print(upcoming)
+                completion(upcoming, nil)
+            }
+    }
+    func EPLUpComingGames(completion: @escaping (_ matches: [Match],_ error: Error?) -> Void) {
+            var upcoming: [Match] = []
+        
+            db.collection("epl_odds").addSnapshotListener { querySnapshot, error in
+                guard querySnapshot != nil else{
+                    print("Error fetching: \(error)")
                     return
                 }
                 for document in querySnapshot!.documents {

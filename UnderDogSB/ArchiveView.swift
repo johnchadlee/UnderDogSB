@@ -14,36 +14,36 @@ struct ArchiveView : View {
 @State var posts: [Initial.Datas] = []
     func dummy(){}
     var body: some View {
+        ZStack{
+            Color.Neumorphic.main.ignoresSafeArea()
         VStack{
             Text("Betting History")
                 .font(.system(size: 30, weight: .bold, design: .rounded))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding()
 //            Spacer()
-            
             HStack (alignment: .top, spacing: 10) {
-                List{
+                ScrollView{
                     VStack{
                         Text("Won")
                             .foregroundColor(.green)
                             .padding()
-//                        OnGoing()
                         betsWon()
                     }
                 }.padding(.top)
                 Divider()
-                List{
+                ScrollView{
                     VStack{
                         Text("Lost")
                             .foregroundColor(.red)
                             .padding()
-//                        OnGoing()
                         betsLost()
                     }
                 }.padding(.top)
             }
         }
         .font(.custom("NotoSans-Medium", size: 25))
+        }
     }
 }
 //#endif

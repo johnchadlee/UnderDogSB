@@ -39,7 +39,9 @@ struct OnGoing: View {
                     .foregroundColor(.green)
                 Divider()
             }
-        }
+        }.padding()
+        .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+        .padding()
         .onAppear(){
             OnGoingBets = session.onGoingBets
         }

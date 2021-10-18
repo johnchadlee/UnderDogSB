@@ -49,6 +49,8 @@ struct BettingView: View {
     @State var commenceTime: String = ""
     @State var homeTeam: String = ""
     @State var gameID: String = ""
+    @State var sign: [String] = ["+","-","+","-"]
+    
     
     var purchase: String {
         //pur referes to team that will win according to the option selected
@@ -108,7 +110,10 @@ struct BettingView: View {
 
     var body: some View {
         VStack {
-            HStack(spacing: 50){
+            HStack(spacing: 45){
+                if(UIScreen.main.bounds.height != 667){
+                    Spacer()
+                }
                 if(UIScreen.main.bounds.height == 667){
                     VStack{
                         Text("Amount")
@@ -129,9 +134,19 @@ struct BettingView: View {
                     Text("$\(TotalGain,specifier:"%.2f")")
                         .foregroundColor(.white)
                 }
+                VStack{
+                    Button("Cancel"){
+                        bottomSheetShown = false;
+                    }.font(.system(size: 12))
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(width: 80, height: 35)
+                    .background(Capsule()
+                                    .fill(Color.red).opacity(0.8))
+                }
             }
             .padding(.bottom)
-            HStack(spacing: 100){
+            HStack(spacing: 90){
                 Text("\(team_Name1)")
                     .foregroundColor(.lightPurple)
                 Text("\(team_Name2)")
@@ -140,7 +155,7 @@ struct BettingView: View {
             Section{
                 Picker("Odd Selection", selection: $Odds){
                     ForEach(0..<OddsAmount.count){
-                        Text("\(self.OddsAmount[$0] ?? 0.0, specifier: "%.3f")%")
+                        Text("\(sign[$0])\(self.OddsAmount[$0] ?? 0.0, specifier: "%.3f")")
                     }
                 }.pickerStyle(SegmentedPickerStyle())
             }
@@ -158,9 +173,11 @@ struct BettingView: View {
             }
             Section{
                 if(UIScreen.main.bounds.height != 667){
-                    Text("Betting Amount: " + value)
+                    VStack{
+                    Text("Betting Amount: $" + value)
                         .foregroundColor(.yellow)
                         .padding()
+                    }
                 }
             }
             Section{

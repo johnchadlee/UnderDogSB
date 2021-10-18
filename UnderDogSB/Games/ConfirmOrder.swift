@@ -53,6 +53,7 @@ struct ConfirmOrder: View {
                     Section{
                         Text("Game Date: \(date)")
                             .foregroundColor(.white)
+                            .underline()
                     }
                     Section{
                         HStack{
@@ -93,6 +94,8 @@ struct ConfirmOrder: View {
                         placeOrder()
                         self.showSheet = false
                         self.bottomSheetShown = false
+                        let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                        impactMed.impactOccurred()
                     }, label: {
                       Text("Confirm")
                         .padding()

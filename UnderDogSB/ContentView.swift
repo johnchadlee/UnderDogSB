@@ -66,7 +66,7 @@ struct LoggedInView : View {
                 }
                 .tag(3)
         }
-        .accentColor(.neonGreen)
+        .accentColor(.neonOceanBlue)
     }
 }
 
@@ -124,10 +124,17 @@ struct HomeTabView : View {
             self.showOnGoing.toggle()
         }
     }
+    func displayUpComing() {
+        withAnimation{
+            self.showUpComing.toggle()
+        }
+    }
     var body: some View {
         
         ZStack{
-            List{
+            Color.Neumorphic.main.ignoresSafeArea()
+            ScrollView{
+                Spacer()
                 VStack{
                     let currentScoreIndex = (session.profile?.score.count ?? 0 ) - 1
                     let balance = "$ \(session.profile?.score[currentScoreIndex].description ?? "?")"
@@ -145,6 +152,10 @@ struct HomeTabView : View {
                             subtitleFont: .system(size: 24, weight: .bold, design: .monospaced)
                         )
                             .frame(height: 400)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                            )
+                            .padding()
                     }
                     else{
                         iLineChart(
@@ -159,55 +170,75 @@ struct HomeTabView : View {
                             subtitleFont: .system(size: 24, weight: .bold, design: .monospaced)
                         )
                         .frame(height: 400)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow()
+                        )
+                        .padding()
                     }
-                    Divider()
+//                    Divider()
                     VStack{
                         HStack{
                             Text("Buying Power: ")
-                                .font(.custom("NotoSans-Bold", size: 20))
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .offset(x: 15.0, y: 5.0)
+                                .font(.system(size: 20, weight: .regular, design: .rounded)).bold()
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                                .offset(x: 15.0, y: 5.0)
+                            Spacer()
                             Text("$\(buyingPower,specifier:"%.2f")")
                                 .bold()
-                        }
-                    }
-                    Divider()
+                        }.padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softInnerShadow(RoundedRectangle(cornerRadius: 20))
+                        )
+                    }.padding()
+//                    Divider()
                     //Ongoing Bets
                     VStack{
                         Button(action: displayOnGoing, label: {
                             HStack(){
                                 Text("Ongoing Bets")
-                                    .font(.custom("NotoSans-Medium", size: 25))
+                                    .font(.system(size: 25, weight: .regular, design: .rounded))
                                 if(self.showOnGoing == false){
                                 Text("▼")
                                 }else {
                                     Text("▲")
                                 }
+                                Spacer()
                             }
                             .alignmentGuide(.leading){
                                 d in d[.trailing]
                             }
-                            .offset(x: CGFloat(spacing), y: 5.0)
-                        })
-                            .frame(width: .infinity, height: 50, alignment: .leading)
+                        }).softButtonStyle(RoundedRectangle(cornerRadius: 20))
                         if showOnGoing == true {
                                 OnGoing()
                         }
-                    }
+                    }.buttonStyle(PlainButtonStyle())
                     .padding()
-                    Spacer()
-                    Divider()
+//                    Spacer()
+//                    Divider()
                     VStack{
-                        //Upcoming Bets
-                        Text("Upcoming Bets")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    .offset(x: -5.0, y: 5.0)
-                                    .font(.custom("NotoSans-Medium", size: 25))
-                            .padding()
-                        UpComing(gamed: $gamed, bottomSheetShown: $bottomSheetShown)
-                        //Show all games that matches with preference
+                        Button(action: displayUpComing, label: {
+                            HStack(){
+                                Text("Upcoming Bets")
+                                    .font(.system(size: 25, weight: .regular, design: .rounded))
+                                if(self.showUpComing == false){
+                                Text("▼")
+                                }else {
+                                    Text("▲")
+                                }
+                                Spacer()
+                            }
+                            .alignmentGuide(.leading){
+                                d in d[.trailing]
+                            }
+                        }).softButtonStyle(RoundedRectangle(cornerRadius: 20))
+                        if showUpComing == true{
+                            UpComing(gamed: $gamed ,bottomSheetShown: $bottomSheetShown)
+                            //Show all games that matches with preference
                         }
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                    .padding()
+                }
+                Spacer()
             }
             if (bottomSheetShown != false) {
                 GeometryReader{ geometry in
@@ -227,8 +258,9 @@ struct HomeTabView : View {
                             BettingView(OddsAmount: OddsAmount, team_Name1: team_Name1, team_Name2: team_Name2, bottomSheetShown: $bottomSheetShown, id: id, buyingPower:buyingPower, commenceTime: commenceTime, homeTeam: home_team, gameID: gameID)
                         }
                         .padding(geometry.safeAreaInsets)
-                        .transition(.move(edge: .leading))
+//                        .transition(.move(edge: .leading))
                     }
+                    .transition(.scale(scale: 0.5, anchor: .bottom))
                     .edgesIgnoringSafeArea(.all)
                 }
             }
@@ -241,43 +273,71 @@ struct ProfileTabView: View {
     @EnvironmentObject var session: SessionStore
     var body: some View{
         NavigationView{
-                List{
+            ZStack{
+                Color.Neumorphic.main.ignoresSafeArea();
+                ScrollView{
+                    VStack(spacing: 1){
+                    HStack{
                     NavigationLink (destination: UpdatePasswordView()){
                         Text("Update Password")
-                            .font(.system(size: 23))
+                            .font(.system(size: 20))
                             .padding()
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    Spacer()
+                    }.padding()
+                    HStack{
                     NavigationLink (destination: UpdatePreferenceView()){
                         Text("Update Sports Preference")
-                            .font(.system(size: 23))
+                            .font(.system(size: 20))
                             .padding()
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
 //                    NavigationLink (destination: UpdateInformationView())
 //                        { Text("Update User Information").background(Color.clear)}
+                    Spacer()
+                    }.padding()
+                    HStack{
                     NavigationLink (destination: ContactSupportView()){
                         Text("Contact Support")
-                            .font(.system(size: 23))
+                            .font(.system(size: 20))
                             .padding()
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    Spacer()
+                    }.padding()
+                    HStack{
                     NavigationLink (destination: SportsBetting101View()){
                         Text("Sports Betting 101")
-                            .font(.system(size: 23))
+                            .font(.system(size: 20))
                             .padding()
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    Spacer()
+                    }.padding()
+                    HStack{
                     NavigationLink (destination: DarkModeView()){
                         Text("Dark Mode")
-                            .font(.system(size: 23))
+                            .font(.system(size: 20))
                             .padding()
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    Spacer()
+                    }.padding()
+                    HStack{
                     Button(action: session.signOut){
                         Text("Sign Out")
-                            .font(.system(size: 23))
-                            .padding()
+                            .font(.system(size: 20))
+//                            .padding()
+                    }.softButtonStyle(Capsule(), pressedEffect: .hard)
+                    Spacer()
+                    }.padding()
                     }
                 }
             .navigationBarTitle("Settings")
 //            .font(.system(size: 30, weight: .bold, design: .rounded))
             .padding()
+            }
         }
     }
 }

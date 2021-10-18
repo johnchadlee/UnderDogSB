@@ -43,7 +43,7 @@ struct GameResult: Codable {
 class ResultRepository: ObservableObject {
     private var db = Firestore.firestore()
     
-    func findFinishedGames(completion: @escaping (_ result: [GameResult],_ error: Error?) -> Void) {
+    func findFinishedMLBGames(completion: @escaping (_ result: [GameResult],_ error: Error?) -> Void) {
             var evaluateGames: [GameResult] = []
         
 //            db.collection("MLB_new").whereField("status", isEqualTo: "Final").getDocuments() { (querySnapshot, err) in
@@ -72,71 +72,77 @@ class ResultRepository: ObservableObject {
                         evaluateGames.append(result!)
                     }
                 }
-//                print(evaluateGames)
-
+                completion(evaluateGames, nil)
             }
-            db.collection("nba_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
-                guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
-                    return
-                }
-                for document in querySnapshot!.documents {
-                    let result = try? document.data(as: GameResult.self)
-                    
-                    if result != nil {
-                        evaluateGames.append(result!)
-                    }
-                }
-    //                print(evaluateGames)
-
+    }
+    func findFinishedNBAGames(completion: @escaping (_ result: [GameResult],_ error: Error?) -> Void) {
+        var evaluateGames: [GameResult] = []
+        db.collection("nba_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
+            guard querySnapshot != nil else{
+                print("Error fetching mlbGames: \(error)")
+                return
             }
-            db.collection("ncaaf_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
-                guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
-                    return
+            for document in querySnapshot!.documents {
+                let result = try? document.data(as: GameResult.self)
+                
+                if result != nil {
+                    evaluateGames.append(result!)
                 }
-                for document in querySnapshot!.documents {
-                    let result = try? document.data(as: GameResult.self)
-                    
-                    if result != nil {
-                        evaluateGames.append(result!)
-                    }
-                }
-    //                print(evaluateGames)
-
             }
-            db.collection("nfl_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
-                guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
-                    return
-                }
-                for document in querySnapshot!.documents {
-                    let result = try? document.data(as: GameResult.self)
-                    
-                    if result != nil {
-                        evaluateGames.append(result!)
-                    }
-                }
-    //                print(evaluateGames)
-
-            }
-            db.collection("nhl_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
-                guard querySnapshot != nil else{
-                    print("Error fetching mlbGames: \(error)")
-                    return
-                }
-                for document in querySnapshot!.documents {
-                    let result = try? document.data(as: GameResult.self)
-                    
-                    if result != nil {
-                        evaluateGames.append(result!)
-                    }
-                }
-    //                print(evaluateGames)
-
-            }
-        
             completion(evaluateGames, nil)
+        }
+    }
+    func findFinishedNCAAFGames(completion: @escaping (_ result: [GameResult],_ error: Error?) -> Void) {
+        var evaluateGames: [GameResult] = []
+        db.collection("ncaaf_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
+            guard querySnapshot != nil else{
+                print("Error fetching mlbGames: \(error)")
+                return
+            }
+            for document in querySnapshot!.documents {
+                let result = try? document.data(as: GameResult.self)
+                
+                if result != nil {
+                    evaluateGames.append(result!)
+                }
+            }
+            completion(evaluateGames, nil)
+        }
+    }
+    func findFinishedNHLGames(completion: @escaping (_ result: [GameResult],_ error: Error?) -> Void) {
+        var evaluateGames: [GameResult] = []
+        db.collection("nhl_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
+            guard querySnapshot != nil else{
+                print("Error fetching mlbGames: \(error)")
+                return
+            }
+            for document in querySnapshot!.documents {
+                let result = try? document.data(as: GameResult.self)
+                
+                if result != nil {
+                    evaluateGames.append(result!)
+                }
+            }
+            completion(evaluateGames, nil)
+        }
+    }
+    func findFinishedNFLGames(completion: @escaping (_ result: [GameResult],_ error: Error?) -> Void) {
+        var evaluateGames: [GameResult] = []
+        db.collection("nfl_clean_data").whereField("status", isEqualTo: "Final").addSnapshotListener { querySnapshot, error in
+            guard querySnapshot != nil else{
+                print("Error fetching mlbGames: \(error)")
+                return
+            }
+            for document in querySnapshot!.documents {
+                let result = try? document.data(as: GameResult.self)
+                
+                if result != nil {
+                    evaluateGames.append(result!)
+                }
+            }
+            completion(evaluateGames, nil)
+        }
     }
 }
+
 //#endif

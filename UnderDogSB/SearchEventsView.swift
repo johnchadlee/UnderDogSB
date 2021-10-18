@@ -26,9 +26,14 @@ struct SearchEventsView: View {
     let SportNHL = ["NHL"]
     let SportMMA = ["MMA"]
     let SportNRL = ["NRL"]
+    let SportSERIEA = ["SERIEA"]
+    let SportUEFA = ["UEFA"]
+    let SportLALIGA = ["LALIGA"]
     
     var body: some View {
         NavigationView{
+            ZStack{
+                Color.Neumorphic.main.ignoresSafeArea()
             ScrollView{
                 HStack{
                     HStack{
@@ -74,122 +79,123 @@ struct SearchEventsView: View {
                         .animation(.spring())
                     }
                 }
-                // List of games
-//                ForEach(SportAFL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                    HStack{
-//                       NavigationLink(destination: AUFootballView()) {
-//                            Text("AFL 🏈 🇦🇺")
-//                            Spacer()
-//                       }
-//                    }.padding()
-//                    Divider()
-//                        .padding(.leading)
-//                }
-//                ForEach(SportEPL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                    HStack{
-//                       NavigationLink(destination: SoccerEPLView()) {
-//                            Text("EPL ⚽ 🇬🇧")
-//                            Spacer()
-//                       }
-//                    }.padding()
-//                    Divider()
-//                        .padding(.leading)
-//                }
-//                ForEach(SportEuro.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                    HStack{
-//                       NavigationLink(destination: EuroLeagueBBView()) {
-//                            Text("Euro League 🏀 🇪🇺")
-//                            Spacer()
-//                       }
-//                    }.padding()
-//                    Divider()
-//                    .padding(.leading)
-//                }
                 ForEach(SportNCAAF.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
                        NavigationLink(destination: NCAAFView()) {
                             Text("NCAAF 🏈 🇺🇸")
                             Spacer()
-                       }
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
                     }.padding()
-                    Divider()
-                        .padding(.leading)
+//                    Divider()
+//                        .padding(.leading)
                 }
                 ForEach(SportMLB.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
                        NavigationLink(destination: MLBView()) {
                             Text("MLB ⚾ 🇺🇸")
                             Spacer()
-                       }
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
                     }.padding()
-                    Divider()
-                        .padding(.leading)
+//                    Divider()
+//                        .padding(.leading)
                 }
-//                ForEach(SportMLS.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                    HStack{
-//                       NavigationLink(destination: MLSView()) {
-//                            Text("MLS ⚽ 🇺🇸")
-//                            Spacer()
-//                       }
-//                    }.padding()
-//                    Divider()
-//                        .padding(.leading)
-//                }
-//                ForEach(SportMMA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                    HStack{
-//                        NavigationLink(destination: MMAView()) {
-//                            Text("MMA 🥋 🇺🇸")
-//                            Spacer()
-//                        }
-//                    }.padding()
-//                    Divider()
-//                        .padding(.leading)
-//                }
                 ForEach(SportNBA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
                         NavigationLink(destination: NBAView()) {
                             Text("NBA 🏀 🇺🇸")
                             Spacer()
-                        }
+                        }.padding()
+                        .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
                     }.padding()
-                    Divider()
-                        .padding(.leading)
+//                    Divider()
+//                        .padding(.leading)
                 }
                 ForEach(SportNFL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
                     HStack{
                        NavigationLink(destination: NFLView()) {
                             Text("NFL 🏈 🇺🇸")
                             Spacer()
-                       }
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
                     }.padding()
-                    Divider()
-                        .padding(.leading)
+//                    Divider()
+//                        .padding(.leading)
                 }
-//                Group{
-//                    ForEach(SportNHL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                        HStack{
-//                            NavigationLink(destination: NHLView()) {
-//                                Text("NHL 🏒 🇺🇸")
-//                                Spacer()
-//                            }
-//                        }.padding()
-//                        Divider()
-//                            .padding(.leading)
-//                    }
-//                    ForEach(SportNRL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
-//                        HStack{
-//                            NavigationLink(destination: RugbyView()) {
-//                                Text("NRL 🏉 🇦🇺")
-//                                Spacer()
-//                            }
-//                        }.padding()
-//                        Divider()
-//                            .padding(.leading)
-//                    }
-//                }
+                ForEach(SportMLS.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+                    HStack{
+                       NavigationLink(destination: MLSView()) {
+                            Text("MLS ⚽ 🇺🇸")
+                            Spacer()
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+                }
+                ForEach(SportEPL.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+                    HStack{
+                       NavigationLink(destination: EPLView()) {
+                            Text("EPL ⚽ 🇬🇧")
+                            Spacer()
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+                }
+                ForEach(SportUEFA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+                    HStack{
+                       NavigationLink(destination: UEFAView()) {
+                            Text("UEFA ⚽ 🇪🇺")
+                            Spacer()
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+                }
+                ForEach(SportSERIEA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+                    HStack{
+                       NavigationLink(destination: SerieAView()) {
+                            Text("Serie A ⚽ 🇮🇹")
+                            Spacer()
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+                }
+                ForEach(SportLALIGA.filter {self.text.isEmpty ? true :$0.contains(text)}, id:\.self) {String in
+                    HStack{
+                       NavigationLink(destination: LaLigaView()) {
+                            Text("La Liga ⚽ 🇪🇸")
+                            Spacer()
+                       }.padding()
+                       .background(RoundedRectangle(cornerRadius: 20).fill(Color.Neumorphic.main).softOuterShadow())
+                    }.padding()
+//                    Divider()
+//                        .padding(.leading)
+                }
+
+
+
             }
-            .foregroundColor(.gray)
+            .foregroundColor(.primary)
             .navigationTitle("Events")
+            }
+        }.onAppear(){
+            session.getNHLGames();
+            session.getMLBGames();
+            session.getNCAAFGames();
+            session.getNFLGames();
+            session.getNBAGames();
+            session.getEPLGames();
+            session.getMLSGames();
+            session.getUEFAGames();
+            session.getSerieAGames();
+            session.getLaLigaGames();
         }
     }
 }

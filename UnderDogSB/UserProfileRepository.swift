@@ -29,8 +29,11 @@ struct preference: Codable {
 //  var Euroleague: Bool
 //  var MMA: Bool
 //  var NRL: Bool
-//  var EPL: Bool
-//  var MLS: Bool
+  var EPL: Bool
+  var MLS: Bool
+  var UEFA: Bool
+  var SERIEA: Bool
+  var LALIGA: Bool
 }
 
 class UserProfileRepository: ObservableObject {
@@ -83,13 +86,18 @@ class UserProfileRepository: ObservableObject {
             completion(pref, error)
         }
     }
-    func updatePref(userId: String, NFL:Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
+    func updatePref(userId: String, NFL:Bool, MLB: Bool, NBA: Bool, NHL: Bool, NCAAF: Bool, EPL: Bool, MLS: Bool, SERIEA: Bool, LALIGA: Bool, UEFA: Bool, completion: @escaping (_ pref: preference?, _ error: Error?) -> Void) {
         db.collection("users").document(userId).collection("preference").document("preference").updateData([
             "NFL": NFL,
             "MLB": MLB,
             "NHL": NHL,
             "NBA": NBA,
-            "NCAAF": NCAAF
+            "NCAAF": NCAAF,
+            "EPL": EPL,
+            "MLS": MLS,
+            "UEFA": UEFA,
+            "LALIGA": LALIGA,
+            "SERIEA": SERIEA,
         ]) { err in
             if let err = err {
                 print("Error updating document: \(err)")

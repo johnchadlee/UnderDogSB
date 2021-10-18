@@ -59,4 +59,15 @@ We included the following features below:
 #### NEW MODE! Dark Mode!!!!
 ![Alt Text](https://media.giphy.com/media/ikvgbTO3PZ8FKFBzVx/giphy.gif)
 
-#### WE ARE OPEN TO ANY FORM OF FEEDBACKS!!!!!!!!
+#### New UI update
+<img src="https://user-images.githubusercontent.com/31326034/135805670-de7391c6-3f9f-47d6-a4ae-ec19bbc68002.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135806960-8454ec11-bed7-4d1a-a6d4-36d9ffa83528.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135806129-3cf7aa29-4db8-448a-9269-2fc2bca8f77b.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135805806-6d34b3f1-25f5-489d-b083-f220d02a557c.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135807337-c43d4d39-182f-44c2-b4b8-fdbbfc641aaa.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135807344-7b037be9-b6a2-43a2-9dfb-7bfccc39119d.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135807346-36a12645-2e15-4f87-80e9-e45bcae9144f.png" width="25%" height="25%">
+<img src="https://user-images.githubusercontent.com/31326034/135807350-f3645058-4373-4385-aa58-2b437403cdf5.png" width="25%" height="25%">
+
+#### We are currently beta testing!
+Please download testflight and install our app via this link https://testflight.apple.com/join/LfqKJWnd
